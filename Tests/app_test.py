@@ -1,9 +1,12 @@
 #region Imports
 import os
 import torch
+import asyncio
 import numpy as np
 from transformers import DistilBertConfig
 from Utils.distil_bert_objects import DistilBertForSequenceClassification, TextualInput, predict
+import Tests.post_presentation_data_test as ppdt
+from DbWriter.db_clients import SocialMediaDbClient
 # endregion
 
 
@@ -17,7 +20,10 @@ def run_app_test():
     distilbert = DistilBertForSequenceClassification(config)
     distilbert.load_state_dict(torch.load(weights_file_path, map_location=torch.device('cpu')))
     
-    input_text = np.array(["this is a test"])
+    db_client = SocialMediaDbClient()
+    session = db_client.get_async_session()
+    res = asyncio.run(ppdt.get_post_presentation_data_by_id_test(session, 3))
+    input_text = ppdt.get_post_presentation_data_by_id_test(3)
     input_label = np.zeros(input_text.shape[0]*6).reshape(input_text.shape[0],6)
     test_ds = TextualInput(input_text, input_label)
 
