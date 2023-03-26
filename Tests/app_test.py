@@ -23,8 +23,9 @@ def run_app_test():
     db_client = SocialMediaDbClient()
     session = db_client.get_async_session()
     res = asyncio.run(ppdt.get_post_presentation_data_by_id_test(session, 3))
-    input_text = ppdt.get_post_presentation_data_by_id_test(3)
+    input_text = np.array([res.content])
     input_label = np.zeros(input_text.shape[0]*6).reshape(input_text.shape[0],6)
     test_ds = TextualInput(input_text, input_label)
 
     preds = predict(distilbert, test_ds)
+    print(preds)
