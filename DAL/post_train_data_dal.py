@@ -2,7 +2,7 @@ from typing import List, Optional
 from sqlalchemy import update, delete
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
-from DbWriter.social_media_dto import PostTrainData
+from DAL.social_media_dto import PostTrainData
 from datetime import datetime
 
 

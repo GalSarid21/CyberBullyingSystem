@@ -1,11 +1,14 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import declarative_base, sessionmaker
+from configparser import ConfigParser
 
 
 class SocialMediaDbClient():
 
     def __init__(self):
-        self.__connection_str = ''
+        config = ConfigParser()
+        config.read("Data\\local.ini")
+        self.__connection_str = config.get('MySQL', 'ConnectionStr')
         self.__engine = create_async_engine(self.__connection_str, future=True, echo=True)
         self.__async_session = sessionmaker(bind=self.__engine, expire_on_commit=False, class_=AsyncSession)
         self.__base = declarative_base()

@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime
-from DbWriter.db_clients import SocialMediaDbClient
+from DAL.db_clients import SocialMediaDbClient
 
 client = SocialMediaDbClient()
 Base = client.get_base()

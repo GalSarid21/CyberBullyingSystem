@@ -6,7 +6,7 @@ import numpy as np
 from transformers import DistilBertConfig
 from Utils.distil_bert_objects import DistilBertForSequenceClassification, TextualInput, predict
 import Tests.post_presentation_data_test as ppdt
-from DbWriter.db_clients import SocialMediaDbClient
+from DAL.db_clients import SocialMediaDbClient
 # endregion
 
 

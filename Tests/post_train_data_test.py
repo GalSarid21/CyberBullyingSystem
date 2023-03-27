@@ -1,7 +1,7 @@
 import asyncio
 import Tests.app_test as at
-from DbWriter.post_train_data_dal import PostTrainDataDAL
-from DbWriter.db_clients import SocialMediaDbClient
+from DAL.post_train_data_dal import PostTrainDataDAL
+from DAL.db_clients import SocialMediaDbClient
 
     
 async def get_all_post_train_data_test(async_session):

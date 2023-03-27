@@ -1,6 +1,6 @@
 import asyncio
-from DbWriter.post_presentation_data_dal import PostPresentationDataDAL
-from DbWriter.db_clients import SocialMediaDbClient
+from DAL.post_presentation_data_dal import PostPresentationDataDAL
+from DAL.db_clients import SocialMediaDbClient
 
     
 async def get_all_post_presentation_data_test(async_session):
