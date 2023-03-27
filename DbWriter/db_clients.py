@@ -10,6 +10,9 @@ class SocialMediaDbClient():
         self.__async_session = sessionmaker(bind=self.__engine, expire_on_commit=False, class_=AsyncSession)
         self.__base = declarative_base()
     
+    async def __del__(self) -> None:
+        await self.__engine.dispose()
+
     def get_engine(self):
         return self.__engine
     
