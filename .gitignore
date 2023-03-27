@@ -130,3 +130,6 @@ dmypy.json
 
 # ignore DistilBert weights file
 *.pth
+
+# ignore local config file
+local.ini
