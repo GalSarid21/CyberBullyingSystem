@@ -3,11 +3,12 @@ from sqlalchemy import update, delete
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from DAL.social_media_dto import PostTrainData
+from DAL.social_media_dto import PostTrainData, PostTrainDataStatusID
 from datetime import datetime
 
 
 class PostTrainDataDAL():
+    
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
@@ -22,7 +23,8 @@ class PostTrainDataDAL():
                                      identity_hate: int) -> PostTrainData:
         new_ptd = PostTrainData(
             source, content, toxic, severe_toxic, obscene, insult, threat, identity_hate,
-            added_on=datetime.utcnow(), last_updated_on=datetime.utcnow())
+            status_id = PostTrainDataStatusID.NEW.value, added_on=datetime.utcnow(), 
+            last_updated_on=datetime.utcnow())
         self.db_session.add(new_ptd)
         await self.db_session.flush()
         return new_ptd
@@ -37,6 +39,11 @@ class PostTrainDataDAL():
            .where(func.lower(PostTrainData.source) == source.lower()))
         return q.scalars().all()
     
+    async def get_post_train_data_by_status(self, status_id: int) -> PostTrainData:
+        q = await self.db_session.execute(
+            select(PostTrainData).where(PostTrainData.status_id == status_id))
+        return q.scalars().all()
+
     async def get_post_train_data_by_id(self, id: int) -> PostTrainData:
         q = await self.db_session.execute(
             select(PostTrainData).where(PostTrainData.id == id))
@@ -56,7 +63,8 @@ class PostTrainDataDAL():
                                            obscene: Optional[int] = -1,
                                            threat: Optional[int] = -1,
                                            insult: Optional[int] = -1,
-                                           identity_hate: Optional[int] = -1) -> bool:
+                                           identity_hate: Optional[int] = -1,
+                                           status_id: Optional[int] = -1) -> bool:
         q = update(PostTrainData).where(PostTrainData.id == id)
         is_updated = False
         
@@ -83,6 +91,9 @@ class PostTrainDataDAL():
             is_updated = True
         if identity_hate != -1:
             q = q.values(identity_hate = identity_hate)
+            is_updated = True
+        if status_id != -1:
+            q = q.values(status_id = status_id)
             is_updated = True
 
         if is_updated:
