@@ -2,6 +2,7 @@ from typing import List, Optional
 from sqlalchemy import update, delete
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from DAL.social_media_dto import PostTrainData
 from datetime import datetime
 
@@ -32,7 +33,8 @@ class PostTrainDataDAL():
     
     async def get_post_train_data_by_source(self, source: str) -> List[PostTrainData]:
         q = await self.db_session.execute(
-            select(PostTrainData).where(PostTrainData.source == source))
+            select(PostTrainData)
+           .where(func.lower(PostTrainData.source) == source.lower()))
         return q.scalars().all()
     
     async def get_post_train_data_by_id(self, id: int) -> PostTrainData:

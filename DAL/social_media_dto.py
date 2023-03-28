@@ -58,16 +58,19 @@ class PostPresentationData(Base):
     id = Column('id', Integer, primary_key=True, autoincrement=True)
     source = Column('source', String, primary_key=False)
     content = Column('content', String, primary_key=False)
+    user_name = Column('user_name', String, primary_key=False)
     added_on = Column('added_on', DateTime, primary_key=False)
     last_updated_on = Column('last_updated_on', DateTime, primary_key=False)
 
     def __init__(self, 
                  source: String,
                  content: String,
+                 user_name: String,
                  added_on: DateTime,
                  last_updated_on: DateTime):
         self.source = source
         self.content = content
+        self.user_name = user_name
         self.added_on = added_on
         self.last_updated_on = last_updated_on
     
