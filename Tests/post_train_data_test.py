@@ -1,8 +1,7 @@
-import asyncio
 import Tests.app_test as at
 from DAL.post_train_data_dal import PostTrainDataDAL
-from DAL.social_media_dto import PostTrainDataStatusID
 from DAL.db_clients import SocialMediaDbClient
+from configparser import ConfigParser
 
     
 async def get_all_post_train_data_test(async_session):
@@ -69,42 +68,45 @@ async def update_post_train_data_test(async_session,
                 insult, threat, identity_hate, status_id)
 
 
-def run_post_train_data_tests():
-    # db_client = SocialMediaDbClient()
-    # session = db_client.get_async_session()
-    # res = asyncio.run(get_all_post_train_data_test(session))
-    # print(res)
+async def run_post_train_data_tests():
+    config = ConfigParser()
+    config.read("Data\\local.ini")
     
-    # db_client = SocialMediaDbClient()
-    # session = db_client.get_async_session()
-    # res = asyncio.run(get_post_train_data_by_source_test(session, 'twitter'))
-    # print(res)
-
-    # db_client = SocialMediaDbClient()
-    # session = db_client.get_async_session()
-    # res = asyncio.run(get_post_train_data_by_id_test(session, 1))
-    # print(res.id)
-
-    db_client = SocialMediaDbClient()
+    db_client = SocialMediaDbClient(config)
     session = db_client.get_async_session()
-    res = asyncio.run(create_new_post_train_data_test(
-        session, 'twitter', 
-        'real question is do feminist liberal bigots understand that different rules fro men/weman is sexism',
-        1, 0, 0, 0, 1, 0))
+    res = await get_all_post_train_data_test(session)
+    print(res)
+    
+    db_client = SocialMediaDbClient(config)
+    session = db_client.get_async_session()
+    res = await get_post_train_data_by_source_test(session, 'twitter')
+    print(res)
+
+    db_client = SocialMediaDbClient(config)
+    session = db_client.get_async_session()
+    res = await get_post_train_data_by_id_test(session, 1)
     print(res.id)
 
-    # db_client = SocialMediaDbClient()
+    # db_client = SocialMediaDbClient(config)
     # session = db_client.get_async_session()
-    # res = asyncio.run(update_post_train_data_test(
-    #     session, 4, status_id=PostTrainDataStatusID.NEW.value))
+    # res = await create_new_post_train_data_test(
+    #     session, 'twitter', 
+    #     'real question is do feminist liberal bigots understand that different rules fro men/weman is sexism',
+    #     1, 0, 0, 0, 1, 0)
+    # print(res.id)
+
+    # db_client = SocialMediaDbClient(config)
+    # session = db_client.get_async_session()
+    # res = await update_post_train_data_test(
+    #     session, 4, status_id=PostTrainDataStatusID.NEW.value)
     # print(res)
 
-    # db_client = SocialMediaDbClient()
+    # db_client = SocialMediaDbClient(config)
     # session = db_client.get_async_session()
-    # res = asyncio.run(get_post_train_data_by_status_test(
-    #     session, PostTrainDataStatusID.NEW.value))
+    # res = await get_post_train_data_by_status_test(
+    #     session, PostTrainDataStatusID.NEW.value)
     # print(res)
 
-    # db_client = SocialMediaDbClient()
+    # db_client = SocialMediaDbClient(config)
     # session = db_client.get_async_session()
-    # asyncio.run(delete_post_train_data_by_id_test(session, 3))
+    # await delete_post_train_data_by_id_test(session, 3)

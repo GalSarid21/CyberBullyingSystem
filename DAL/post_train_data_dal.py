@@ -10,49 +10,49 @@ from datetime import datetime
 class PostTrainDataDAL():
     
     def __init__(self, db_session: Session):
-        self.db_session = db_session
+        self.__db_session = db_session
 
     async def create_post_train_data(self, 
                                      source: str, 
                                      content: str, 
-                                     toxic: int,
-                                     severe_toxic: int,
-                                     obscene: int,
-                                     insult: int,
-                                     threat: int,
-                                     identity_hate: int) -> PostTrainData:
+                                     toxic: Optional[int] = 0,
+                                     severe_toxic: Optional[int] = 0,
+                                     obscene: Optional[int] = 0,
+                                     insult: Optional[int] = 0,
+                                     threat: Optional[int] = 0,
+                                     identity_hate: Optional[int] = 0) -> PostTrainData:
         new_ptd = PostTrainData(
             source, content, toxic, severe_toxic, obscene, insult, threat, identity_hate,
             status_id = PostTrainDataStatusID.NEW.value, added_on=datetime.utcnow(), 
             last_updated_on=datetime.utcnow())
-        self.db_session.add(new_ptd)
-        await self.db_session.flush()
+        self.__db_session.add(new_ptd)
+        await self.__db_session.flush()
         return new_ptd
 
     async def get_all_post_train_data(self) -> List[PostTrainData]:
-        q = await self.db_session.execute(select(PostTrainData).order_by(PostTrainData.id))
+        q = await self.__db_session.execute(select(PostTrainData).order_by(PostTrainData.id))
         return q.scalars().all()
     
     async def get_post_train_data_by_source(self, source: str) -> List[PostTrainData]:
-        q = await self.db_session.execute(
+        q = await self.__db_session.execute(
             select(PostTrainData)
            .where(func.lower(PostTrainData.source) == source.lower()))
         return q.scalars().all()
     
     async def get_post_train_data_by_status(self, status_id: int) -> PostTrainData:
-        q = await self.db_session.execute(
+        q = await self.__db_session.execute(
             select(PostTrainData).where(PostTrainData.status_id == status_id))
         return q.scalars().all()
 
     async def get_post_train_data_by_id(self, id: int) -> PostTrainData:
-        q = await self.db_session.execute(
+        q = await self.__db_session.execute(
             select(PostTrainData).where(PostTrainData.id == id))
         return q.scalars().first()
 
     async def delete_post_train_data_by_id(self, id: int) -> None:
         q = delete(PostTrainData).where(PostTrainData.id == id)
         q.execution_options(synchronize_session="fetch")
-        await self.db_session.execute(q)
+        await self.__db_session.execute(q)
 
     async def update_post_train_data_by_id(self, 
                                            id: int, 
@@ -99,6 +99,6 @@ class PostTrainDataDAL():
         if is_updated:
             q = q.values(last_updated_on = datetime.utcnow())
             q.execution_options(synchronize_session="fetch")
-            await self.db_session.execute(q)
+            await self.__db_session.execute(q)
             return True
         return False

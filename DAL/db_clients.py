@@ -5,9 +5,7 @@ from configparser import ConfigParser
 
 class SocialMediaDbClient():
 
-    def __init__(self):
-        config = ConfigParser()
-        config.read("Data\\local.ini")
+    def __init__(self, config: ConfigParser) -> None:
         self.__connection_str = config.get('MySQL', 'ConnectionStr')
         self.__engine = create_async_engine(self.__connection_str, future=True, echo=True)
         self.__async_session = sessionmaker(bind=self.__engine, expire_on_commit=False, class_=AsyncSession)

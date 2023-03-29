@@ -7,30 +7,33 @@ from typing import Iterable
 
 class TweepyWrapper():
 
-    def __init__(self, config_file_name: str, search_terms: Iterable[str], limit: int) -> None:
-        config = ConfigParser()
-        config.read(config_file_name)
+    def __init__(self, config: ConfigParser) -> None:
         self.__api_key = config.get('Twitter', 'ApiKey')
         self.__api_secret = config.get('Twitter', 'ApiSecret')
         self.__bearer_token = config.get('Twitter', 'BearerToken')
         self.__access_token = config.get('Twitter', 'AccessToken')
         self.__access_token_secret = config.get('Twitter', 'AccessTokenSecret')
-        self.__search_terms = search_terms
-        self.__limit = limit
+        self.__limit = int(config.get('Twitter', 'Limit'))
+        search_terms_str = config.get('Twitter', 'SearchTerms')
+        self.__search_terms = search_terms_str.split(',')
     
     def stream_tweets(self) -> Iterable[TweetDto]:
-        client = tweepy.Client(self.__bearer_token, 
-                               self.__api_key, self.__api_secret,
-                               self.__access_token, self.__access_token_secret)
-        auth = tweepy.OAuth1UserHandler(self.__api_key, self.__api_secret,
-                                        self.__access_token, self.__access_token_secret)
-        api = tweepy.API(auth)
-        stream_client = _MyStreamClient(client, self.__bearer_token, self.__limit)
-        search_terms = self.__search_terms
-        for term in search_terms:
-            stream_client.add_rules(tweepy.StreamRule(term))
-        stream_client.filter(tweet_fields=['referenced_tweets', 'author_id'])
-        return stream_client.get_tweets()
+        with tweepy.Client(self.__bearer_token, 
+                self.__api_key, self.__api_secret,
+                self.__access_token, self.__access_token_secret) as client:
+            auth = tweepy.OAuth1UserHandler(self.__api_key, self.__api_secret,
+                                            self.__access_token, self.__access_token_secret)
+            api = tweepy.API(auth, wait_on_rate_limit=True)
+            
+            with _MyStreamClient(client, self.__bearer_token, self.__limit) as stream_client:
+                previousRules = stream_client.get_rules().data
+                if previousRules:
+                    stream_client.delete_rules(previousRules)
+                for term in self.__search_terms:
+                    stream_client.add_rules(tweepy.StreamRule(term))
+                
+                stream_client.filter(tweet_fields=['referenced_tweets', 'author_id', 'lang'])
+                return stream_client.get_tweets()
     
 
 class _MyStreamClient(tweepy.StreamingClient):
@@ -57,8 +60,8 @@ class _MyStreamClient(tweepy.StreamingClient):
             user = self.__client.get_user(id=author_id)
             user_name = user.data['name']
             
-            is_english_user_name = StringUtils.is_english(user_name)
-            is_english_text = StringUtils.is_english(tweet.text)
+            is_english_user_name = StringUtils.is_english_chars(user_name)
+            is_english_text = tweet.data['lang'] == 'en'
             is_content_exists = any(tweet.text.lower() == t.content.lower() for t in self.__tweets)
             
             if is_english_text and is_english_user_name and not is_content_exists:

@@ -1,8 +1,11 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from DAL.db_clients import SocialMediaDbClient
 from enum import IntEnum
+from configparser import ConfigParser
 
-client = SocialMediaDbClient()
+config = ConfigParser()
+config.read("Data\\local.ini")
+client = SocialMediaDbClient(config)
 Base = client.get_base()
 
 
@@ -66,7 +69,7 @@ class PostTrainData(Base):
 
     def __repr__(self) -> str:
         obj_str = f'id: {self.id} | source: {self.source}\ncontent: {self.content}\n' +\
-                  f'tocix: {self.toxic}, severe toxic: {self.severe_toxic}, obscene: {self.obscene}, ' +\
+                  f'toxic: {self.toxic}, severe toxic: {self.severe_toxic}, obscene: {self.obscene}, ' +\
                   f'insult: {self.insult}, threat: {self.threat}, identity hate: {self.identity_hate}, ' +\
                   f'status id: {self.status_id}, added on: {self.added_on}, last updated on: {self.last_updated_on}'
         return obj_str
