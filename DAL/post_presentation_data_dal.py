@@ -4,13 +4,14 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from DAL.social_media_dto import PostPresentationData
+from DAL.post_data_base_dal import PostDataBase
 from datetime import datetime
 
 
-class PostPresentationDataDAL():
+class PostPresentationDataDAL(PostDataBase):
     
     def __init__(self, db_session: Session):
-        self.__db_session = db_session
+        super().__init__(db_session)
 
     async def create_post_presentation_data(self, 
                                             source: str, 
@@ -18,27 +19,27 @@ class PostPresentationDataDAL():
                                             user: str) -> PostPresentationData:
         new_ppd = PostPresentationData(
             source, content, user, added_on=datetime.utcnow(), last_updated_on=datetime.utcnow())
-        self.__db_session.add(new_ppd)
-        await self.__db_session.flush()
+        self._db_session.add(new_ppd)
+        await self._db_session.flush()
         return new_ppd
     
     async def get_all_post_presentation_data(self) -> PostPresentationData:
-        q = await self.__db_session.execute(select(PostPresentationData).order_by(PostPresentationData.id))
+        q = await self._db_session.execute(select(PostPresentationData).order_by(PostPresentationData.id))
         return q.scalars().all()
 
     async def get_post_presentation_data_by_source(self, source: str) -> List[PostPresentationData]:
-        q = await self.__db_session.execute(
+        q = await self._db_session.execute(
             select(PostPresentationData)
            .where(func.lower(PostPresentationData.source) == source.lower()))
         return q.scalars().all()
     
     async def get_post_presentation_data_by_id(self, id: int) -> PostPresentationData:
-        q = await self.__db_session.execute(
+        q = await self._db_session.execute(
             select(PostPresentationData).where(PostPresentationData.id == id))
         return q.scalars().first()
 
     async def get_post_presentation_data_by_user_name(self, user_name: str) -> List[PostPresentationData]:
-        q = await self.__db_session.execute(
+        q = await self._db_session.execute(
             select(PostPresentationData)
            .where(func.lower(PostPresentationData.user_name) == user_name.lower()))
         return q.scalars().all()
@@ -46,7 +47,7 @@ class PostPresentationDataDAL():
     async def delete_post_presentation_data_by_id(self, id: int) -> None:
         q = delete(PostPresentationData).where(PostPresentationData.id == id)
         q.execution_options(synchronize_session="fetch")
-        await self.__db_session.execute(q)
+        await self._db_session.execute(q)
 
     async def update_post_presentation_data_by_id(self, 
                                                   id: int, 
@@ -69,6 +70,6 @@ class PostPresentationDataDAL():
         if is_updated:
             q = q.values(last_updated_on = datetime.utcnow())
             q.execution_options(synchronize_session="fetch")
-            await self.__db_session.execute(q)
+            await self._db_session.execute(q)
             return True
         return False

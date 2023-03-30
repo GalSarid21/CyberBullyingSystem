@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from DAL.db_clients import SocialMediaDbClient
-from enum import IntEnum
+from enum import IntEnum, Enum
 from configparser import ConfigParser
 
 config = ConfigParser()
@@ -8,6 +8,9 @@ config.read("Data\\local.ini")
 client = SocialMediaDbClient(config)
 Base = client.get_base()
 
+class PostDataType(Enum):
+    POST_TRAIN_DATA = 1,
+    POST_PRESENTATION_DATA = 2
 
 class PostTrainDataStatusID(IntEnum):
     NEW = 1,
@@ -19,13 +22,11 @@ class PostTrainDataStatusID(IntEnum):
     def __int__(self):
         return self.value
 
-
 class PostTrainDataStatus(Base):
     __tablename__ = 'post_train_data_status'
 
     status_id = Column('id', Integer, primary_key=True)
     status_str = Column('status_str', String, primary_key=False)
-
 
 class PostTrainData(Base):
     __tablename__ = 'post_train_data'
@@ -73,7 +74,6 @@ class PostTrainData(Base):
                   f'insult: {self.insult}, threat: {self.threat}, identity hate: {self.identity_hate}, ' +\
                   f'status id: {self.status_id}, added on: {self.added_on}, last updated on: {self.last_updated_on}'
         return obj_str
-
 
 class PostPresentationData(Base):
     __tablename__ = 'post_presentation_data'

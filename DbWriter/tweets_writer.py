@@ -1,7 +1,12 @@
 from configparser import ConfigParser
 from DbWriter.tweepy_setup import TweepyWrapper
+from DAL.twitter_dto import TweetDto
+from DAL.social_media_dto import PostDataType
 from DAL.db_clients import SocialMediaDbClient
 from DAL.post_train_data_dal import PostTrainDataDAL
+from DAL.post_presentation_data_dal import PostPresentationDataDAL
+from DAL.post_data_base_dal import PostDataBase
+from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Iterable
 
 
@@ -11,7 +16,7 @@ class TweetWriterEngine():
         self.__tweepy = TweepyWrapper(config)
         self.__db_client = db_client
 
-    async def write_tweets_to_post_train_data(self) -> Iterable[PostTrainDataDAL]:
+    async def write_tweets_to_db(self, table: PostDataType) -> Iterable[PostDataBase]:
         tweets = self.__tweepy.stream_tweets()
         async_session = self.__db_client.get_async_session()
         failures = []
@@ -20,13 +25,23 @@ class TweetWriterEngine():
             try:
                 async with async_session() as session:
                     async with session.begin():
-                        ptd_dal = PostTrainDataDAL(session)
-                        await ptd_dal.create_post_train_data('twitter', tweet.content)
+                        await self.__create_new_row_by_table_type(table, tweet, session)
             except Exception as e:
                 failures.append(tweet)
         
         return failures
-
-    async def write_tweets_to_post_presentation_data(self):
-        tweets = self.__tweepy.stream_tweets()
-        session = self.__db_client.get_async_session()
+    
+    async def __create_new_row_by_table_type(self, 
+                                             table: PostDataType, 
+                                             tweet: TweetDto, 
+                                             session: AsyncSession) -> None:
+        match table:
+            
+            case PostDataType.POST_TRAIN_DATA:
+                ptd_dal = PostTrainDataDAL(session)
+                await ptd_dal.create_post_train_data('twitter', tweet.content)
+            
+            case PostDataType.POST_PRESENTATION_DATA:
+                ppd_dal = PostPresentationDataDAL(session)
+                await ppd_dal.create_post_presentation_data(
+                    'twitter', tweet.content, tweet.user_name)

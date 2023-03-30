@@ -4,13 +4,14 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from DAL.social_media_dto import PostTrainData, PostTrainDataStatusID
+from DAL.post_data_base_dal import PostDataBase
 from datetime import datetime
 
 
-class PostTrainDataDAL():
+class PostTrainDataDAL(PostDataBase):
     
     def __init__(self, db_session: Session):
-        self.__db_session = db_session
+        super().__init__(db_session)
 
     async def create_post_train_data(self, 
                                      source: str, 
@@ -25,34 +26,34 @@ class PostTrainDataDAL():
             source, content, toxic, severe_toxic, obscene, insult, threat, identity_hate,
             status_id = PostTrainDataStatusID.NEW.value, added_on=datetime.utcnow(), 
             last_updated_on=datetime.utcnow())
-        self.__db_session.add(new_ptd)
-        await self.__db_session.flush()
+        self._db_session.add(new_ptd)
+        await self._db_session.flush()
         return new_ptd
 
     async def get_all_post_train_data(self) -> List[PostTrainData]:
-        q = await self.__db_session.execute(select(PostTrainData).order_by(PostTrainData.id))
+        q = await self._db_session.execute(select(PostTrainData).order_by(PostTrainData.id))
         return q.scalars().all()
     
     async def get_post_train_data_by_source(self, source: str) -> List[PostTrainData]:
-        q = await self.__db_session.execute(
+        q = await self._db_session.execute(
             select(PostTrainData)
            .where(func.lower(PostTrainData.source) == source.lower()))
         return q.scalars().all()
     
     async def get_post_train_data_by_status(self, status_id: int) -> PostTrainData:
-        q = await self.__db_session.execute(
+        q = await self._db_session.execute(
             select(PostTrainData).where(PostTrainData.status_id == status_id))
         return q.scalars().all()
 
     async def get_post_train_data_by_id(self, id: int) -> PostTrainData:
-        q = await self.__db_session.execute(
+        q = await self._db_session.execute(
             select(PostTrainData).where(PostTrainData.id == id))
         return q.scalars().first()
 
     async def delete_post_train_data_by_id(self, id: int) -> None:
         q = delete(PostTrainData).where(PostTrainData.id == id)
         q.execution_options(synchronize_session="fetch")
-        await self.__db_session.execute(q)
+        await self._db_session.execute(q)
 
     async def update_post_train_data_by_id(self, 
                                            id: int, 
@@ -99,6 +100,6 @@ class PostTrainDataDAL():
         if is_updated:
             q = q.values(last_updated_on = datetime.utcnow())
             q.execution_options(synchronize_session="fetch")
-            await self.__db_session.execute(q)
+            await self._db_session.execute(q)
             return True
         return False
