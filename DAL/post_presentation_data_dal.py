@@ -26,6 +26,12 @@ class PostPresentationDataDAL(PostDataBase):
     async def get_all_post_presentation_data(self) -> PostPresentationData:
         q = await self._db_session.execute(select(PostPresentationData).order_by(PostPresentationData.id))
         return q.scalars().all()
+    
+    async def get_top_n_post_presentation_data(self, ids_to_exclude: List[int], n: int = 10) -> PostPresentationData:
+        q = await self._db_session.execute(select(PostPresentationData) 
+                                          .filter(PostPresentationData.id.not_in(ids_to_exclude))
+                                          .limit(n))
+        return q.scalars().all()
 
     async def get_post_presentation_data_by_source(self, source: str) -> List[PostPresentationData]:
         q = await self._db_session.execute(
