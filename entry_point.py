@@ -3,6 +3,7 @@ import Tests.post_train_data_test as ptdt
 import Tests.post_presentation_data_test as ppdt
 import Tests.tweepy_test as tt
 import Tests.tweet_writer_test as twt
+import Tests.gpt_writer_test as gwt
 import ModelAPI.bullying_detector as bd
 import asyncio
 
@@ -24,4 +25,7 @@ if __name__ == "__main__":
     #asyncio.run(twt.tweet_writer_engine_test())
 
     # run flask server test
-    bd.run_server_test()
+    #bd.run_server_test()
+
+    # run gpt writer test
+    asyncio.run(gwt.run_gpt_writer_test())

@@ -6,6 +6,7 @@ from sqlalchemy import func
 from DAL.social_media_dto import PostTrainData, PostTrainDataStatusID
 from DAL.post_data_base_dal import PostDataBase
 from datetime import datetime
+from enum import IntEnum
 
 
 class PostTrainDataDAL(PostDataBase):
@@ -103,3 +104,12 @@ class PostTrainDataDAL(PostDataBase):
             await self._db_session.execute(q)
             return True
         return False
+    
+
+class PredValsIndex(IntEnum):
+    TOXIC = 0,
+    SEVERE_TOXIC = 1,
+    OBSCENE = 2,
+    THREAT = 3,
+    INSULT = 4,
+    IDENTITY_HATE = 5

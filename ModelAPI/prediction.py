@@ -1,12 +1,4 @@
-from enum import IntEnum
-
-class PredValsIndex(IntEnum):
-    TOXIC = 0,
-    SEVERE_TOXIC = 1,
-    OBSCENE = 2,
-    THREAT = 3,
-    INSULT = 4,
-    IDENTITY_HATE = 5
+from DAL.post_train_data_dal import PredValsIndex
 
 class Prediction():
 
