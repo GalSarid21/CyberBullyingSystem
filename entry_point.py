@@ -7,8 +7,12 @@ import Tests.gpt_writer_test as gwt
 import ModelAPI.bullying_detector as bd
 import asyncio
 
+from DbWriter.db_writer_manager import DbWriterManager
+from DAL.social_media_dto import PostDataType
+
 
 if __name__ == "__main__":
+    #region Tests
     # run new example throw model test 
     #at.run_app_test()
 
@@ -28,4 +32,10 @@ if __name__ == "__main__":
     #bd.run_server_test()
 
     # run gpt writer test
-    asyncio.run(gwt.run_gpt_writer_test())
+    #asyncio.run(gwt.run_gpt_writer_test())
+    # endregion
+
+    #region Runners
+    db_writer_manager = DbWriterManager()
+    asyncio.run(db_writer_manager.write_new_tweets(PostDataType.POST_TRAIN_DATA))
+    #endregion

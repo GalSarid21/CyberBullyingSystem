@@ -12,8 +12,10 @@ from typing import Iterable
 
 class TweetWriterEngine():
 
-    def __init__(self, config: ConfigParser, db_client: SocialMediaDbClient) -> None:
-        self.__tweepy = TweepyWrapper(config)
+    def __init__(self, config: ConfigParser, 
+                 db_client: SocialMediaDbClient, 
+                 search_terms_str: str) -> None:
+        self.__tweepy = TweepyWrapper(config, search_terms_str)
         self.__db_client = db_client
 
     async def write_tweets_to_db(self, table: PostDataType) -> Iterable[PostDataBase]:
@@ -42,6 +44,7 @@ class TweetWriterEngine():
                 await ptd_dal.create_post_train_data('twitter', tweet.content)
             
             case PostDataType.POST_PRESENTATION_DATA:
+                # TODO: check if content+user_name is in train DB
                 ppd_dal = PostPresentationDataDAL(session)
                 await ppd_dal.create_post_presentation_data(
                     'twitter', tweet.content, tweet.user_name)

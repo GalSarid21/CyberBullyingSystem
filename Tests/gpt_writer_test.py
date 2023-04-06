@@ -14,4 +14,4 @@ async def run_gpt_writer_test():
     # print(res)
 
     # write labels test
-    res = await engine.write_labels_to_db()
+    await engine.write_labels_to_db()

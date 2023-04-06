@@ -5,6 +5,7 @@ from DAL.db_clients import SocialMediaDbClient
 from configparser import ConfigParser
 from Utils.numbers import Numbers
 from typing import Iterable
+import asyncio
 import openai
 
 
@@ -22,14 +23,18 @@ class GptWriterEngine():
                     ptd_dal = PostTrainDataDAL(session)
                     all_new_posts = await ptd_dal.get_post_train_data_by_status(
                             PostTrainDataStatusID.NEW.value)
+            print(f'\nFetched {len(all_new_posts)} db tweets with status new\n')
 
             labels_dict = {}
             for new_post in all_new_posts:
                 labels_str = await self.get_labels(new_post.content)
                 labels_entry = self.get_labels_dict(labels_str)       
                 labels_dict.update({new_post.id: labels_entry})
+                await asyncio.sleep(5)
+            print(f'\Got {len(labels_dict)} labels from GPT\n')
 
-            for id, labels_list in zip(labels_dict.keys(), labels_dict.values()):
+            for id, labels_list, i in zip(labels_dict.keys(), labels_dict.values(), range(0,len(labels_dict))):
+                print(f'\Start processing tweet {i}/{len(labels_dict)}\n')
                 async_session = self.__db_client.get_async_session()
                 async with async_session() as session:
                     async with session.begin():
@@ -45,8 +50,7 @@ class GptWriterEngine():
                             status_id=PostTrainDataStatusID.PROCESSED.value)
         except Exception as e:
             print(e)
-
-        
+ 
     async def get_labels(self, text: str, length: int=1024) -> str:
         
         openai.api_key = self.__api_key

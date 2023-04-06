@@ -1,4 +1,5 @@
 import tweepy
+from datetime import datetime
 from DAL.twitter_dto import TweetDto
 from configparser import ConfigParser
 from Utils.string import StringUtils
@@ -7,14 +8,14 @@ from typing import Iterable
 
 class TweepyWrapper():
 
-    def __init__(self, config: ConfigParser) -> None:
+    def __init__(self, config: ConfigParser, search_terms_str: str) -> None:
         self.__api_key = config.get('Twitter', 'ApiKey')
         self.__api_secret = config.get('Twitter', 'ApiSecret')
         self.__bearer_token = config.get('Twitter', 'BearerToken')
         self.__access_token = config.get('Twitter', 'AccessToken')
         self.__access_token_secret = config.get('Twitter', 'AccessTokenSecret')
         self.__limit = int(config.get('Twitter', 'Limit'))
-        search_terms_str = config.get('Twitter', 'SearchTerms')
+        self.__timeout_seconds = float(config.get('Twitter', 'TimeOut'))
         self.__search_terms = search_terms_str.split(',')
     
     def stream_tweets(self) -> Iterable[TweetDto]:
@@ -25,7 +26,7 @@ class TweepyWrapper():
                                         self.__access_token, self.__access_token_secret)
         api = tweepy.API(auth, wait_on_rate_limit=True)
             
-        stream_client =  _MyStreamClient(client, self.__bearer_token, self.__limit)
+        stream_client =  _MyStreamClient(client, self.__bearer_token, self.__limit, self.__timeout_seconds)
         previousRules = stream_client.get_rules().data
         if previousRules:
             stream_client.delete_rules(previousRules)
@@ -38,13 +39,16 @@ class TweepyWrapper():
 
 class _MyStreamClient(tweepy.StreamingClient):
 
-    def __init__(self, client: tweepy.Client, bearer_token: str, limit: int) -> None:
+    def __init__(self, client: tweepy.Client, bearer_token: str, limit: int, timeout_seconds: float) -> None:
         super().__init__(bearer_token=bearer_token)
         self.__client = client
         self.__limit = limit
+        self.__start_time = None
+        self.__timeout_seconds = timeout_seconds
         self.__tweets = []
 
     def on_connect(self) -> None:
+        self.__start_time = datetime.utcnow()
         print('\nconnected\n')
 
     def on_disconnect(self) -> None:
@@ -67,8 +71,9 @@ class _MyStreamClient(tweepy.StreamingClient):
             if is_english_text and is_english_user_name and not is_content_exists:
                 print(f'user_name: {user_name} | tweet: {tweet.text}\n')
                 self.__tweets.append(TweetDto(user_name, tweet.text))
-            
-        if len(self.__tweets) == self.__limit:
+        
+        run_time_seconds = datetime.utcnow() - self.__start_time
+        if len(self.__tweets) == self.__limit or run_time_seconds >= self.__timeout_seconds:
             self.disconnect()
             return False
         return True
