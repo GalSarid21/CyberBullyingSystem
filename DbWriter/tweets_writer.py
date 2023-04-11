@@ -20,11 +20,13 @@ class TweetWriterEngine():
 
     async def write_tweets_to_db(self, table: PostDataType) -> Iterable[PostDataBase]:
         tweets = self.__tweepy.stream_tweets()
+        print(f'\nFetched {len(tweets)} from twitter\n')
         async_session = self.__db_client.get_async_session()
         failures = []
 
-        for tweet in tweets:
+        for tweet, i in zip(tweets, range(0, len(tweets))):
             try:
+                print(f'Start process tweet {i+1}/{len(tweets)}')
                 async with async_session() as session:
                     async with session.begin():
                         await self.__create_new_row_by_table_type(table, tweet, session)

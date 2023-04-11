@@ -1,4 +1,5 @@
 import tweepy
+import asyncio
 from datetime import datetime
 from DAL.twitter_dto import TweetDto
 from configparser import ConfigParser
@@ -16,6 +17,7 @@ class TweepyWrapper():
         self.__access_token_secret = config.get('Twitter', 'AccessTokenSecret')
         self.__limit = int(config.get('Twitter', 'Limit'))
         self.__timeout_seconds = float(config.get('Twitter', 'TimeOut'))
+        self.__retries = int(config.get('Twitter', 'Retries'))
         self.__search_terms = search_terms_str.split(',')
     
     def stream_tweets(self) -> Iterable[TweetDto]:
@@ -33,7 +35,14 @@ class TweepyWrapper():
         for term in self.__search_terms:
             stream_client.add_rules(tweepy.StreamRule(term))
         
-        stream_client.filter(tweet_fields=['referenced_tweets', 'author_id', 'lang'])
+        for _try in range(0, self.__retries):
+            try:
+                stream_client.filter(tweet_fields=['referenced_tweets', 'author_id', 'lang'])
+                break
+            except Exception as e:
+                print(f'Cought exception: {e}\nInitiate asyncio.sleep')
+                asyncio.sleep(60)
+                print(f'Start retry number: {_try + 1}')
         return stream_client.get_tweets()
     
 
@@ -72,8 +81,8 @@ class _MyStreamClient(tweepy.StreamingClient):
                 print(f'user_name: {user_name} | tweet: {tweet.text}\n')
                 self.__tweets.append(TweetDto(user_name, tweet.text))
         
-        run_time_seconds = datetime.utcnow() - self.__start_time
-        if len(self.__tweets) == self.__limit or run_time_seconds >= self.__timeout_seconds:
+        duration = datetime.utcnow() - self.__start_time
+        if len(self.__tweets) >= self.__limit or duration.seconds >= self.__timeout_seconds:
             self.disconnect()
             return False
         return True

@@ -41,9 +41,9 @@ class PostTrainDataDAL(PostDataBase):
            .where(func.lower(PostTrainData.source) == source.lower()))
         return q.scalars().all()
     
-    async def get_post_train_data_by_status(self, status_id: int) -> PostTrainData:
+    async def get_post_train_data_by_status(self, status_id: int, limit: int = 10) -> PostTrainData:
         q = await self._db_session.execute(
-            select(PostTrainData).where(PostTrainData.status_id == status_id))
+            select(PostTrainData).where(PostTrainData.status_id == status_id).limit(limit))
         return q.scalars().all()
 
     async def get_post_train_data_by_id(self, id: int) -> PostTrainData:

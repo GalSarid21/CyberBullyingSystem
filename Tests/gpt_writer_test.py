@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 from DAL.db_clients import SocialMediaDbClient
 from DbWriter.gpt_writer import GptWriterEngine
+from DAL.post_train_data_dal import PostTrainDataDAL
 
 
 async def run_gpt_writer_test():
@@ -14,4 +15,8 @@ async def run_gpt_writer_test():
     # print(res)
 
     # write labels test
-    await engine.write_labels_to_db()
+    try:
+        while True:
+            await engine.write_labels_to_db()
+    except Exception as e:
+        print(e)
