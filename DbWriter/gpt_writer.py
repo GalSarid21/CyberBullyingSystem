@@ -8,6 +8,7 @@ from Utils.numbers import Numbers
 from typing import Iterable
 from varname import nameof
 import openai
+import time
 
 
 class GptWriterEngine():
@@ -35,25 +36,30 @@ class GptWriterEngine():
                 labels_str = await self.get_labels(new_post.content)
                 labels_entry = self.get_labels_dict(labels_str)       
                 labels_dict.update({new_post.id: labels_entry})
+                if i % 3 == 0:
+                    time.sleep(60)
             except Exception as e:
                 print(e)
         print(f'\Got {len(labels_dict)} labels from GPT\n')
 
         for id, labels_list, i in zip(labels_dict.keys(), labels_dict.values(), range(0,len(labels_dict))):
-            print(f'\Start processing tweet {i+1}/{len(labels_dict)}\n')
-            async_session = self.__db_client.get_async_session()
-            async with async_session() as session:
-                async with session.begin():
-                    ptd_dal = PostTrainDataDAL(session)
-                    all_new_posts = await ptd_dal.update_post_train_data_by_id(
-                        id=id, 
-                        toxic=labels_list[PredValsIndex.TOXIC.name],
-                        severe_toxic=labels_list[PredValsIndex.SEVERE_TOXIC.name],
-                        obscene=labels_list[PredValsIndex.OBSCENE.name],
-                        threat=labels_list[PredValsIndex.THREAT.name],
-                        insult=labels_list[PredValsIndex.INSULT.name],
-                        identity_hate=labels_list[PredValsIndex.IDENTITY_HATE.name],
-                        status_id=PostTrainDataStatusID.PROCESSED.value)
+            try:
+                print(f'\Start processing tweet {i+1}/{len(labels_dict)}\n')
+                async_session = self.__db_client.get_async_session()
+                async with async_session() as session:
+                    async with session.begin():
+                        ptd_dal = PostTrainDataDAL(session)
+                        all_new_posts = await ptd_dal.update_post_train_data_by_id(
+                            id=id, 
+                            toxic=labels_list[PredValsIndex.TOXIC.name],
+                            severe_toxic=labels_list[PredValsIndex.SEVERE_TOXIC.name],
+                            obscene=labels_list[PredValsIndex.OBSCENE.name],
+                            threat=labels_list[PredValsIndex.THREAT.name],
+                            insult=labels_list[PredValsIndex.INSULT.name],
+                            identity_hate=labels_list[PredValsIndex.IDENTITY_HATE.name],
+                            status_id=PostTrainDataStatusID.PROCESSED.value)
+            except Exception as e:
+                print(e)
  
     async def get_labels(self, text: str, length: int=1024) -> str:
         

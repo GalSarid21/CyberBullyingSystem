@@ -4,7 +4,7 @@ from DAL.social_media_dto import PostDataType
 from DAL.db_clients import SocialMediaDbClient
 from DbWriter.gpt_writer import GptWriterEngine
 from DbWriter.tweets_writer import TweetWriterEngine
-import asyncio
+import time
 
 class DbWriterManager():
 
@@ -31,4 +31,4 @@ class DbWriterManager():
                     await gpt_writer.write_labels_to_db()
             except Exception as e:
                 print(e)
-                asyncio.sleep(60)
+                time.sleep(60)

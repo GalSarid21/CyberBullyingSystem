@@ -1,5 +1,5 @@
 import tweepy
-import asyncio
+import time
 from datetime import datetime
 from DAL.twitter_dto import TweetDto
 from configparser import ConfigParser
@@ -21,27 +21,26 @@ class TweepyWrapper():
         self.__search_terms = search_terms_str.split(',')
     
     def stream_tweets(self) -> Iterable[TweetDto]:
-        client = tweepy.Client(self.__bearer_token, 
-                               self.__api_key, self.__api_secret,
-                               self.__access_token, self.__access_token_secret)
-        auth = tweepy.OAuth1UserHandler(self.__api_key, self.__api_secret,
-                                        self.__access_token, self.__access_token_secret)
-        api = tweepy.API(auth, wait_on_rate_limit=True)
-            
-        stream_client =  _MyStreamClient(client, self.__bearer_token, self.__limit, self.__timeout_seconds)
-        previousRules = stream_client.get_rules().data
-        if previousRules:
-            stream_client.delete_rules(previousRules)
-        for term in self.__search_terms:
-            stream_client.add_rules(tweepy.StreamRule(term))
-        
         for _try in range(0, self.__retries):
             try:
+                client = tweepy.Client(self.__bearer_token, 
+                                    self.__api_key, self.__api_secret,
+                                    self.__access_token, self.__access_token_secret)
+                auth = tweepy.OAuth1UserHandler(self.__api_key, self.__api_secret,
+                                                self.__access_token, self.__access_token_secret)
+                api = tweepy.API(auth, wait_on_rate_limit=True)
+                    
+                stream_client =  _MyStreamClient(client, self.__bearer_token, self.__limit, self.__timeout_seconds)
+                previousRules = stream_client.get_rules().data
+                if previousRules:
+                    stream_client.delete_rules(previousRules)
+                for term in self.__search_terms:
+                    stream_client.add_rules(tweepy.StreamRule(term))
                 stream_client.filter(tweet_fields=['referenced_tweets', 'author_id', 'lang'])
                 break
             except Exception as e:
-                print(f'Cought exception: {e}\nInitiate asyncio.sleep')
-                asyncio.sleep(60)
+                print(f'Cought exception: {e}\nInitiate time.sleep')
+                time.sleep(120)
                 print(f'Start retry number: {_try + 1}')
         return stream_client.get_tweets()
     
