@@ -1,0 +1,32 @@
+.accordion {
+    width: 700px;
+}
+
+.item {
+    background: #ffcdd2;
+    margin-bottom: 5px;
+    padding: 10px 20px;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.titletext {
+    color: #f50057;
+}
+
+.content {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0,1,0,1);
+}
+
+.content.show {
+    height: auto;
+    max-height: 9999;
+    transition: all 0.5s cubic-bezier(0,1,0,1);
+}
