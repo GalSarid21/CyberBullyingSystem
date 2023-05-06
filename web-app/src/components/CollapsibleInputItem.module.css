@@ -1,0 +1,42 @@
+.input {
+    width: 850px;
+}
+
+.actions {
+    margin-top: 1rem;
+    text-align: right;
+}
+
+.actions button {
+    font: inherit;
+    cursor: pointer;
+    background-color: #ffcdd2;
+    color: #77002e;
+    padding: 0.5rem 1.5rem;
+    border: 2px solid #77002e;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.actions button:hover,
+.actions button:active {
+  background-color: #a50e48;
+  border-color: #a50e48;
+  color: white;
+}
+
+.content {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0,1,0,1);
+}
+
+.content.show {
+    height: auto;
+    max-height: 9999;
+    transition: all 0.5s cubic-bezier(0,1,0,1);
+}
+
+.button {
+    margin-right: 5px;
+}

@@ -44,6 +44,10 @@ class PostPresentationDataDAL(PostDataBase):
             select(PostPresentationData).where(PostPresentationData.id == id))
         return q.scalars().first()
 
+    async def get_max_post_id(self) -> int:
+        q = await self._db_session.execute(func.max(PostPresentationData.id))
+        return q.scalar()
+
     async def get_post_presentation_data_by_user_name(self, user_name: str) -> List[PostPresentationData]:
         q = await self._db_session.execute(
             select(PostPresentationData)

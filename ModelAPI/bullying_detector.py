@@ -5,12 +5,14 @@ from DAL.post_presentation_data_dal import PostPresentationDataDAL
 import Utils.multithreading as multithreading
 from configparser import ConfigParser
 from flask_caching import Cache
+from flask_cors import CORS
 from pathlib import Path
 import numpy as np
 import json
 
 # create app
 app = Flask(__name__)
+CORS(app)
 
 # read config and get vlas
 config = ConfigParser()
@@ -52,6 +54,24 @@ async def detect_bullying_from_user():
         predictions = dbo.predict(distilbert, text_ds)
         predictions_as_dto = [UserPrediction(p).__dict__ for p in predictions]
         return json.dumps(predictions_as_dto)
+    except Exception as e:
+        print(e)
+        return 'An error accured, please try again later.', 500
+
+@app.route('/api/db-posts/random', methods=['GET'])
+async def get_random_db_post():
+    try:            
+        async_session = dbo.get_async_session(config)
+        async with async_session() as session:
+            async with session.begin():
+                ppd = None
+                while ppd is None:
+                    ppd_dal = PostPresentationDataDAL(session)
+                    max_id = await ppd_dal.get_max_post_id()
+                    post_id = np.random.randint(1, max_id)
+                    ppd = await ppd_dal.get_post_presentation_data_by_id(post_id)
+        return {'id': ppd.id, 'user_name': ppd.user_name, 'content': ppd.content}
+    
     except Exception as e:
         print(e)
         return 'An error accured, please try again later.', 500

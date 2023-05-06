@@ -29,13 +29,13 @@ if __name__ == "__main__":
     #asyncio.run(twt.tweet_writer_engine_test())
 
     # run flask server test
-    #bd.run_server_test()
+    bd.run_server_test()
 
     # run gpt writer test
     #asyncio.run(gwt.run_gpt_writer_test())
     # endregion
 
     #region Runners
-    db_writer_manager = DbWriterManager()
-    asyncio.run(db_writer_manager.write_new_tweets(PostDataType.POST_TRAIN_DATA))
+    #db_writer_manager = DbWriterManager()
+    #asyncio.run(db_writer_manager.write_new_tweets(PostDataType.POST_TRAIN_DATA))
     #endregion

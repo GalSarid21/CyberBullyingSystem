@@ -1,4 +1,6 @@
 import { useState } from "react";
+import CollapsibleContent from "../components/CollapsibleContent";
+import CollapsibleInputContent from "../components/CollapsibleInputContent";
 import classes from "../components/layouts/Accordion.module.css"
 
 function NlpModelPage() {
@@ -36,11 +38,11 @@ function NlpModelPage() {
 const data = [
   {
     title: "Free Text",
-    body: "This is the free text section"
+    body: <CollapsibleInputContent/>
   },
   {
     title: "Example Tweets",
-    body: "This is the example tweets section"
+    body: <CollapsibleContent />
   }
 ]
 

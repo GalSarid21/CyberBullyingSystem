@@ -2,7 +2,12 @@ from DAL.post_presentation_data_dal import PostPresentationDataDAL
 from DAL.db_clients import SocialMediaDbClient
 from configparser import ConfigParser
 
-    
+async def get_max_post_id_test(async_session):
+    async with async_session() as session:
+        async with session.begin():
+            ptd_dal = PostPresentationDataDAL(session)
+            return await ptd_dal.get_max_post_id()
+
 async def get_all_post_presentation_data_test(async_session):
     async with async_session() as session:
         async with session.begin():
@@ -50,6 +55,11 @@ async def run_post_presentation_data_tests():
     config = ConfigParser()
     config.read("Data\\local.ini")
     
+    db_client = SocialMediaDbClient(config)
+    session = db_client.get_async_session()
+    res = await get_max_post_id_test(session)
+    print(res)
+
     db_client = SocialMediaDbClient(config)
     session = db_client.get_async_session()
     res = await get_all_post_presentation_data_test(session)
