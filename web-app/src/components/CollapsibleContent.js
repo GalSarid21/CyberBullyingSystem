@@ -8,14 +8,15 @@ function CollapsibleContent() {
 
     const [data, setData] = useState([]);
     const [tweet, setTweet] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingTweet, setIsLoadingTweet] = useState(false);
+    const [isLoadingPreds, setIsLoadingPreds] = useState(false);
     const [showTweetDiv, setShowTweetDiv] = useState(false);
     const [showResultsDiv, setShowResultsDiv] = useState(false);
     const [err, setErr] = useState('');
 
     const handleTweet = async () => {
         setErr('');
-        setIsLoading(true);
+        setIsLoadingTweet(true);
         setShowTweetDiv(false);
         setShowResultsDiv(false);
 
@@ -40,7 +41,7 @@ function CollapsibleContent() {
         } catch (err) {
           setErr(err.message);
         } finally {
-          setIsLoading(false);
+          setIsLoadingTweet(false);
         }
       };
     
@@ -48,7 +49,7 @@ function CollapsibleContent() {
     
       const handlePrediction = async () => {
         setErr('');
-        setIsLoading(true);
+        setIsLoadingPreds(true);
 
         try {
           const url = 'http://localhost:5000/api/user-input/detect-bullying?text='
@@ -68,12 +69,11 @@ function CollapsibleContent() {
           console.log('prediction is: ', JSON.stringify(result, null, 4));
           
           setData(result);
-          setIsLoading(false);
           setShowResultsDiv(true);
         } catch (err) {
           setErr(err.message);
         } finally {
-            setIsLoading(false);
+          setIsLoadingPreds(false);
         }
       };
 
@@ -81,7 +81,7 @@ function CollapsibleContent() {
         <div>
             <div>
                 {err && <h2>{err}</h2>}
-                {isLoading && <LoadingSpinner />}
+                {isLoadingTweet && <LoadingSpinner />}
             </div>
             <div className={showTweetDiv ? classes.twitterTweet : classes.content}>
                 <header className={classes.header}>
@@ -94,6 +94,7 @@ function CollapsibleContent() {
                   <p>{tweet.user_name}</p>
                 </span>
             </div>
+            {isLoadingPreds && <LoadingSpinner />}
             <div className={showResultsDiv ? classes.contentshow : classes.content}>
                 <h3>Model Prediction: </h3>
                 {data.map(labels => {
