@@ -1,7 +1,8 @@
-import { useState } from "react";
-import LoadingSpinner from "./LoadingSpinner";
-import classes from './CollapsibleInputItem.module.css'
-import Prediction from "./Prediction";
+import { useState } from 'react';
+import LoadingSpinner from './LoadingSpinner';
+import classes from './CollapsibleInputItem.module.css';
+import Prediction from './Prediction';
+import twitterImg from '../images/twitter.png'
 
 function CollapsibleContent() {
 
@@ -82,11 +83,16 @@ function CollapsibleContent() {
                 {err && <h2>{err}</h2>}
                 {isLoading && <LoadingSpinner />}
             </div>
-            <div className={showTweetDiv ? classes.contentshow : classes.content}>
-                <h3>Tweet Content: </h3>
-                <p>{tweet.content}</p>
-                <h3>Author: </h3>
-                <p>{tweet.user_name}</p>
+            <div className={showTweetDiv ? classes.twitterTweet : classes.content}>
+                <header className={classes.header}>
+                  <h3 className={classes.tweetHeader}>Tweet Content</h3>
+                  <img className={classes.img} src={twitterImg} alt='twitter'></img>
+                </header>
+                <p classeName={classes.twitterTweet}>{tweet.content}</p>
+                <span className={classes.span}>
+                  <h4>Author: </h4>
+                  <p>{tweet.user_name}</p>
+                </span>
             </div>
             <div className={showResultsDiv ? classes.contentshow : classes.content}>
                 <h3>Model Prediction: </h3>

@@ -1,7 +1,7 @@
-import { useState } from "react";
-import LoadingSpinner from "./LoadingSpinner";
-import classes from './CollapsibleInputItem.module.css'
-import Prediction from "./Prediction";
+import { useState } from 'react';
+import LoadingSpinner from './LoadingSpinner';
+import classes from './CollapsibleInputItem.module.css';
+import Prediction from './Prediction';
 
 function CollapsibleInputContent() {
 
@@ -58,9 +58,9 @@ function CollapsibleInputContent() {
             <h4>Please enter your free text for the NLP model below:</h4>
             <input
                 className={classes.input}
-                type="text"
-                id="message"
-                name="message"
+                type='text'
+                id='message'
+                name='message'
                 onChange={handleChange}
                 value={message}
             />
