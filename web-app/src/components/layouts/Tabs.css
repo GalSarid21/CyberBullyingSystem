@@ -1,0 +1,146 @@
+*, ::before, ::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+h4 {
+  padding-right: 1%;
+}
+
+body {
+  background: #fff;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 900px;
+  height: 440px;
+  word-break: break-all;
+  background: #ffcdd2;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bloc-tabs {
+  display: flex;
+  border-radius: 6px;
+}
+.tabs {
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  width: 50%;
+  background: rgb(236, 218, 218);
+  cursor: pointer;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.274);
+  border-radius: 6px;
+  box-sizing: content-box;
+  position: relative;
+  outline: none;
+}
+.tabs:not(:last-child){
+  border-right: 1px solid rgba(0, 0, 0, 0.274);
+}
+
+.active-tabs  {
+  background: #ffcdd2;
+  border-bottom: 1px solid transparent;
+}
+
+.active-tabs::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% + 2px);
+  height: 5px;
+  background: #f50057;
+}
+
+button {
+  border: none;
+  
+}
+button:hover {
+  background-color: #ffcdd2;
+  border-color: solid rgba(0, 0, 0, 0.274);
+  color: black;
+}
+.content-tabs {
+  flex-grow : 1;
+}
+.content {
+  background: #ffcdd2;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  display: none;
+  border-radius: 6px;
+}
+.content h2 {
+  padding: 0px 0 5px 0px;
+}
+.content hr {
+  width: 100px;
+  height: 2px;
+  background: #222;
+  margin-bottom: 5px;
+}
+.content p {
+  width: 100%;
+  height: 90%;
+}
+.active-content {
+  display: block;
+}
+
+.input {
+  display: flex;
+  align-items: center;
+}
+
+.input-text {
+  width: 40%;
+}
+
+.actions {
+  margin-top: 0.1rem;
+  text-align: right;
+  padding-left: 1%;
+}
+
+.actions button {
+  font: inherit;
+  cursor: pointer;
+  background-color: #ffcdd2;
+  color: #77002e;
+  padding: 0.15rem 0.15rem;
+  border: 2px solid #77002e;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.actions button:hover,
+.actions button:active {
+  background-color: #a50e48;
+  border-color: #a50e48;
+  color: white;
+}
+
+.table-show {
+  height: auto;
+  max-height: 9999;
+  transition: all 0.5s cubic-bezier(0,1,0,1);
+  margin-top: 3%;
+}
+
+.table-hide {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0,1,0,1);
+}

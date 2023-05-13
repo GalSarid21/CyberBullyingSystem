@@ -68,8 +68,8 @@ function CollapsibleInputContent() {
                 <h3>Model Prediction: </h3>
                 {data.map(labels => {
                     return <div>
-                    <Prediction labels={labels}/>
-                </div>;
+                      <Prediction labels={labels}/>
+                    </div>;
                 })}
             </div>
             <div className={classes.actions}>
