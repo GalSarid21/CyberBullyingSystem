@@ -37,5 +37,5 @@ if __name__ == "__main__":
 
     #region Runners
     #db_writer_manager = DbWriterManager()
-    #asyncio.run(db_writer_manager.write_new_tweets(PostDataType.POST_TRAIN_DATA))
+    #asyncio.run(db_writer_manager.write_new_tweets(PostDataType.POST_PRESENTATION_DATA))
     #endregion

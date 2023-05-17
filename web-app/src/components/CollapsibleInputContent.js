@@ -51,10 +51,6 @@ function CollapsibleInputContent() {
     
     return (
         <div>
-            <div>
-                {err && <h2>{err}</h2>}
-                {isLoading && <LoadingSpinner />}
-            </div>
             <h4>Please enter your free text for the NLP model below:</h4>
             <input
                 className={classes.input}
@@ -64,6 +60,10 @@ function CollapsibleInputContent() {
                 onChange={handleChange}
                 value={message}
             />
+            <div>
+                {err && <h2>{err}</h2>}
+                {isLoading && <LoadingSpinner />}
+            </div>
             <div className={showResultsDiv ? classes.contentshow : classes.content}>
                 <h3>Model Prediction: </h3>
                 {data.map(labels => {

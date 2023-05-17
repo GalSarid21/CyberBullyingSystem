@@ -46,7 +46,6 @@ class TweetWriterEngine():
                 await ptd_dal.create_post_train_data('twitter', tweet.content)
             
             case PostDataType.POST_PRESENTATION_DATA:
-                # TODO: check if content+user_name is in train DB
                 ppd_dal = PostPresentationDataDAL(session)
                 await ppd_dal.create_post_presentation_data(
                     'twitter', tweet.content, tweet.user_name)

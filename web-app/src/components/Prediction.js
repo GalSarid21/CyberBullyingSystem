@@ -1,7 +1,7 @@
 import classes from './Prediction.module.css'
 
 function Prediction(props) {
-    return <div>
+    return <div className={classes.prediction}>
         <button className={props.labels.toxic ? classes.toggleTrue : classes.toggleFalse}>
             {'toxic'}
         </button>

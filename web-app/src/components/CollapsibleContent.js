@@ -78,7 +78,7 @@ function CollapsibleContent() {
       };
 
     return (
-        <div>
+        <div className={classes.tweetBorder}>
             <div>
                 {err && <h2>{err}</h2>}
                 {isLoadingTweet && <LoadingSpinner />}
@@ -86,13 +86,13 @@ function CollapsibleContent() {
             <div className={showTweetDiv ? classes.twitterTweet : classes.content}>
                 <header className={classes.header}>
                   <h3 className={classes.tweetHeader}>Tweet Content</h3>
-                  <img className={classes.img} src={twitterImg} alt='twitter'></img>
+                  <span className={classes.span}>
+                    <h4 className={classes.author}>Author: </h4>
+                    <p className={classes.author}>{tweet.user_name}</p>
+                  </span>
+                  <img className={classes.img} src={twitterImg} alt='twitter' />
                 </header>
                 <p classeName={classes.twitterTweet}>{tweet.content}</p>
-                <span className={classes.span}>
-                  <h4>Author: </h4>
-                  <p>{tweet.user_name}</p>
-                </span>
             </div>
             {isLoadingPreds && <LoadingSpinner />}
             <div className={showResultsDiv ? classes.contentshow : classes.content}>

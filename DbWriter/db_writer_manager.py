@@ -15,7 +15,7 @@ class DbWriterManager():
         self.__db_client = SocialMediaDbClient(config)
 
     async def write_new_tweets(self, post_data_type: PostDataType):
-        search_terms_list = self.__config.get('Twitter', 'SearchTermsHate')
+        search_terms_list = self.__config.get('Twitter', 'SearchTermsNonHate')
         search_terms_list = search_terms_list.split(',')
         search_terms_list = [','.join(str(st) for st in search_terms_list[i * 3 : i * 3 + 3]) 
                                               for i in range(len(search_terms_list) // 3)]
@@ -29,6 +29,8 @@ class DbWriterManager():
                     print(f'\nStarting {nameof(GptWriterEngine)}\n')
                     gpt_writer = GptWriterEngine(self.__config, self.__db_client)
                     await gpt_writer.write_labels_to_db()
+                else:
+                    time.sleep(600)
             except Exception as e:
                 print(e)
-                time.sleep(60)
+                time.sleep(600)
