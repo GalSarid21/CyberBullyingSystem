@@ -85,7 +85,7 @@ def predict(model, data_loader):
 
 def get_distilbert_configured(config):
     base_path = f"{os.path.abspath(os.curdir)}"
-    weights_file_path = f"{base_path}\\Data\\distilbert_model_weights.pth"
+    weights_file_path = f"{base_path}\\Data\\distilbert_model_weights_ver2.pth"
     
     distilbert = DistilBertForSequenceClassification(config)
     distilbert.load_state_dict(torch.load(weights_file_path, map_location=torch.device('cpu')))

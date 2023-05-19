@@ -21,7 +21,7 @@ body {
   word-break: break-all;
   background: #ffcdd2;
   border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 15px rgba(64,64,64,.7);
 }
 
 .bloc-tabs {
@@ -135,8 +135,9 @@ button:hover {
 }
 
 .table-show {
-  height: auto;
-  max-height: 9999;
+  height: 300px;
+  width: 860px;
+  overflow: auto;
   transition: all 0.5s cubic-bezier(0,1,0,1);
   margin-top: 3%;
 }

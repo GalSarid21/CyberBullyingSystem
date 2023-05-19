@@ -22,7 +22,7 @@ function CollapsibleInputContent() {
 
         try {
           const url = 'http://localhost:5000/api/user-input/detect-bullying?text='
-          const response = await fetch(url.concat('', message), {
+          const response = await fetch(url.concat('', message.slice(1)), {
             method: 'GET',
             headers: {
               Accept: 'application/json',
