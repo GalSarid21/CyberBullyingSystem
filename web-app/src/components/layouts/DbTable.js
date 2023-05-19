@@ -33,7 +33,7 @@ function DbTable() {
                 {posts && posts.map(post =>
                     <tr key={post.id}>
                         <td>{post.source}</td>
-                        <td>{post.userName}</td>
+                        <td><span>{post.userName}</span></td>
                         <td><span>{post.content}</span></td>
                         <td>{post.toxic}</td>
                         <td>{post.severeToxic}</td>
