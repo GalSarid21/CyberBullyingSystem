@@ -1,0 +1,75 @@
+ .input {
+    display: flex;
+    align-items: center;
+    font-family: 'Open Sans',Sans-serif;
+  }
+  
+  .input-text {
+    width: 40%;
+    margin-top: 2%;
+    margin-left: 2%;
+    font-family: 'Open Sans',Sans-serif;
+  }
+  
+  .input-text-short {
+    width: 31.5%;
+    margin-top: 2%;
+    margin-left: 2%;
+    font-family: 'Open Sans',Sans-serif;
+  }
+  
+  .text-area {
+    margin-top: 2%;
+    margin-left: 2%;
+    width: 90%;
+    height: 40px;
+    resize: none;
+    font-family: 'Open Sans',Sans-serif;
+  }
+  
+  .form {
+    padding: 2% 2% 2% 2%;
+    margin-top: 2%;
+    margin-left: 2%;
+  }
+  
+  .form-btn {
+    margin-right: 8%;
+  }
+  
+  .actions {
+    margin-top: 2%;
+    text-align: right;
+    padding-left: 2%;
+  }
+  
+  .actions button {
+    font: inherit;
+    cursor: pointer;
+    background-color: #ffcdd2;
+    color: #77002e;
+    padding: 0.15rem 0.15rem;
+    border: 2px solid #77002e;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  
+  .actions button:hover,
+  .actions button:active {
+    background-color: #a50e48;
+    border-color: #a50e48;
+    color: white;
+  }
+
+  .content-hide {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0,1,0,1);
+ }
+
+ .content-show {
+    height: auto;
+    max-height: 9999;
+    transition: all 0.5s cubic-bezier(0,1,0,1);
+    margin-left: 2%;
+ }

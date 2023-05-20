@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import LoadingSpinner from '../LoadingSpinner';
+import NewDbMonitorForm from './NewDbMonitorForm';
 import DbTable from './DbTable';
 import './Tabs.css';
 
@@ -7,13 +8,21 @@ function Tabs() {
   const [err, setErr] = useState('');
   const [posts, setPosts] = useState([]);
   const [message, setMessage] = useState('');
+  const [deleteId, setDeleteId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showTable, setShowTable] = useState(false);
+  const [showDeleteMsg, setshowDeleteMsg] = useState(false);
   const [toggleState, setToggleState] = useState(1);
 
-  const handleKeypress = e => {
-    if (e.keyCode === 13) { //enter
+  const handleKeypress = (event) => {
+    if (event.keyCode === 13) { //enter
       handleClick();
+    }
+  }
+
+  const handleDeleteKeypress = (event) => {
+    if (event.keyCode === 13) { //enter
+      handleDelete();
     }
   }
 
@@ -21,12 +30,12 @@ function Tabs() {
     setMessage(event.target.value);
   };
 
-  const toggleTab = (index) => {
-        setToggleState(index);
+  const handleDeleteChange = (event) => {
+    setDeleteId(event.target.value);
   };
 
-  const handleSubmission = (event) => {
-    event.preventDefault();
+  const toggleTab = (index) => {
+        setToggleState(index);
   };
 
   const handleClick = async () => {
@@ -60,6 +69,35 @@ function Tabs() {
     catch (err) {
       setErr(err.message);
       setPosts([]);
+    } 
+    
+    finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handleDelete = async () => {
+    setErr('');
+    setIsLoading(true);
+    setshowDeleteMsg(false);
+
+    try {
+      const url = 'http://localhost:5000/api/hate-monitors/delete?id='
+      const response = await fetch(url.concat('', deleteId), {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+
+      if (!response.status === 204) {
+        throw new Error(`Error! status: ${response.status}`);
+      }
+      setshowDeleteMsg(true);
+    } 
+    
+    catch (err) {
+      setErr(err.message);
     } 
     
     finally {
@@ -132,29 +170,35 @@ function Tabs() {
         >
           <div>
             <h2>Add a new entry to the DB Monitor table</h2>
-            <form className='form' onSubmit={handleSubmission}>
-              <div className='input'>
-                  <h4 htmlFor='title' className='h4'>Source:</h4>
-                  <input type='text' required id='title' className='input-text-short'></input>
-                  <h4 htmlFor='user-name' className='h4'>User Name:</h4>
-                  <input type='text' required id='user-name' className='input-text-short'></input>
-              </div>
-              <div>
-                <h4 htmlFor='content' className='h4'>Content:</h4>
-                <textarea id='content' className='text-area'></textarea>
-              </div>
-                <div className='actions'>
-                  <button className='form-btn'>Submit</button>
-              </div>
-            </form>
+            <NewDbMonitorForm />
           </div>
         </div>
         
         <div
           className={toggleState === 3 ? "content  active-content" : "content"}
         >
-            <h2>Delete an entry from the DB Monitor table</h2>
-            <p>Here the form is going to be</p>
+            <div className='input'>
+                <h4>Please enter hate monitor id to delete:</h4>
+                <input
+                    className='input-text'
+                    type='text'
+                    id='delete'
+                    name='delete'
+                    onChange={handleDeleteChange}
+                    value={deleteId}
+                    onKeyDown={handleDeleteKeypress}
+                />
+                <div className='actions'>
+                    <button onClick={handleDelete}>Delete</button>
+                </div>
+            </div>
+            <div>
+                {err && <h3>{err}</h3>}
+                {isLoading && <LoadingSpinner />}
+            </div>
+            <div className={showDeleteMsg && !isLoading ? 'active-content' : 'content'}>
+              <h3>Event was deleted successfully!</h3>
+            </div>
         </div>
         
         <div

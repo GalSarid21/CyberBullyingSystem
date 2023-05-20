@@ -12,7 +12,7 @@ from configparser import ConfigParser
 
 def run_app_test():
     base_path = f"{os.path.abspath(os.curdir)}"
-    weights_file_path = f"{base_path}\\Data\\distilbert_model_weights.pth"
+    weights_file_path = f"{base_path}\\Data\\distilbert_model_weights_ver2.pth"
     
     config = ConfigParser()
     config.read("Data\\local.ini")

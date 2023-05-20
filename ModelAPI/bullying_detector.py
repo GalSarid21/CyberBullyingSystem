@@ -101,6 +101,51 @@ async def get_hate_monitors():
         print(e)
         return 'An error accured, please try again later.', 500
 
+@app.route('/api/hate-monitors/delete', methods=['GET'])
+async def delete_hate_monitors():
+    
+    id = int(request.args.get('id'))
+    if not id:
+        err_msg = 'invalid url pattern for hate-monitors endpoint. ' +\
+                  'please try again with: /hate-monitors?user_name=<your user name>.'
+        return err_msg, 400
+    
+    try:            
+        async_session = dbo.get_async_session(config)
+        async with async_session() as session:
+            async with session.begin():
+                hm_dal = HateMonitorDAL(session)
+                await hm_dal.delete_hate_monitor_by_id(id)
+        return '', 204 
+    
+    except Exception as e:
+        print(e)
+        return 'An error accured, please try again later.', 500
+
+@app.route('/api/hate-monitors/add', methods=['POST'])
+async def add_hate_monitor():
+    try:
+        req_json = request.get_json(force=True)
+    except:
+        err_msg = 'invalid body pattern.'
+        return err_msg, 400
+    
+    try:            
+        async_session = dbo.get_async_session(config)
+        async with async_session() as session:
+            async with session.begin():
+                hm_dal = HateMonitorDAL(session)
+                await hm_dal.create_hate_monitor(
+                    req_json['source'], req_json['userName'], req_json['content'],
+                    req_json['toxic'], req_json['severeToxic'], req_json['obscene'],
+                    req_json['threat'], req_json['insult'], req_json['identityHate']
+                )
+        return '', 201
+    
+    except Exception as e:
+        print(e)
+        return 'An error accured, please try again later.', 500
+    
 @app.route('/api/db-input/detect-bullying', methods=['GET', 'POST'])
 async def detect_bullying_from_db():
     try:            
@@ -141,7 +186,7 @@ async def detect_bullying_from_db():
     except Exception as e:
         print(e)
         return 'An error accured, please try again later.', 500
-
+    
 # run server on debug 
 def run_server_test():
     app.run()

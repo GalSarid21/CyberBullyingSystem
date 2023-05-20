@@ -11,8 +11,8 @@ function CollapsibleInputContent() {
     const [showResultsDiv, setshowResultsDiv] = useState(false);
     const [err, setErr] = useState('');
 
-    const handleKeypress = e => {
-      if (e.keyCode === 13) { //enter
+    const handleKeypress = (event) => {
+      if (event.keyCode === 13) { //enter
         handleClick();
       }
     }
