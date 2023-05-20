@@ -1,6 +1,7 @@
 import Tests.app_test as at
 import Tests.post_train_data_test as ptdt
 import Tests.post_presentation_data_test as ppdt
+import Tests.hate_monitor_test as hmt
 import Tests.tweepy_test as tt
 import Tests.tweet_writer_test as twt
 import Tests.gpt_writer_test as gwt
@@ -21,6 +22,9 @@ if __name__ == "__main__":
     
     # run all post_presentation_data Db table tests
     #asyncio.run(ppdt.run_post_presentation_data_tests())
+
+    # run all hate_monitor Db table tests
+    #asyncio.run(hmt.run_hate_monitor_tests())
 
     # run tweepy stream test
     #tt.run_tweepy_stream_test()

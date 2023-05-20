@@ -101,3 +101,60 @@ class PostPresentationData(Base):
         obj_str = f'id: {self.id} | source: {self.source}\ncontent: {self.content}\n' +\
                   f'user name: {self.user_name}, added on: {self.added_on}, last updated on: {self.last_updated_on}'
         return obj_str
+
+class HateMonitor(Base):
+    __tablename__ = 'hate_monitor'
+
+    id = Column('id', Integer, primary_key=True, autoincrement=True)
+    source = Column('source', String, primary_key=False)
+    user_name = Column('user_name', String, primary_key=False)
+    content = Column('content', String, primary_key=False, unique=True)
+    toxic = Column('toxic', Integer, primary_key=False)
+    severe_toxic = Column('severe_toxic', Integer, primary_key=False)
+    obscene = Column('obscene', Integer, primary_key=False)
+    insult = Column('insult', Integer, primary_key=False)
+    threat = Column('threat', Integer, primary_key=False)
+    identity_hate = Column('identity_hate', Integer, primary_key=False)
+    added_on = Column('added_on', DateTime, primary_key=False)
+    last_updated_on = Column('last_updated_on', DateTime, primary_key=False)
+
+    def __init__(self, 
+                 source: String,
+                 user_name: String,
+                 content: String,
+                 toxic: Integer,
+                 severe_toxic: Integer,
+                 obscene: Integer,
+                 insult: Integer,
+                 threat: Integer,
+                 identity_hate: Integer,
+                 added_on: DateTime,
+                 last_updated_on: DateTime):
+        self.source = source
+        self.user_name = user_name
+        self.content = content
+        self.toxic = toxic
+        self.severe_toxic = severe_toxic
+        self.obscene = obscene
+        self.insult = insult
+        self.threat = threat
+        self.identity_hate = identity_hate
+        self.added_on = added_on
+        self.last_updated_on = last_updated_on
+
+    def __repr__(self) -> str:
+        
+        return {
+            'id': self.id,
+            'source': self.source,
+            'userName': self.user_name ,
+            'content': self.content,
+            'toxic': self.toxic, 
+            'severeToxic': self.severe_toxic, 
+            'obscene': self.obscene,
+            'insult': self.insult, 
+            'threat': self.threat, 
+            'identityHate': self.identity_hate,
+            'addedOn': self.added_on, 
+            'lastUpdatedOn': self.last_updated_on
+        }

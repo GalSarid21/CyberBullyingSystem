@@ -4,8 +4,9 @@
   padding: 0;
 }
 
-h4 {
+.h4 {
   padding-right: 1%;
+  padding-left: 2%;
 }
 
 body {
@@ -64,16 +65,18 @@ body {
 
 button {
   border: none;
-  
 }
+
 button:hover {
   background-color: #ffcdd2;
   border-color: solid rgba(0, 0, 0, 0.274);
   color: black;
 }
+
 .content-tabs {
   flex-grow : 1;
 }
+
 .content {
   background: #ffcdd2;
   padding: 20px;
@@ -82,19 +85,23 @@ button:hover {
   display: none;
   border-radius: 6px;
 }
+
 .content h2 {
   padding: 0px 0 5px 0px;
 }
+
 .content hr {
   width: 100px;
   height: 2px;
   background: #222;
   margin-bottom: 5px;
 }
+
 .content p {
   width: 100%;
   height: 90%;
 }
+
 .active-content {
   display: block;
 }
@@ -108,6 +115,28 @@ button:hover {
   width: 40%;
   margin-top: 2%;
   margin-left: 2%;
+}
+
+.input-text-short {
+  width: 31.5%;
+  margin-top: 2%;
+  margin-left: 2%;
+}
+
+.text-area {
+  margin-top: 2%;
+  margin-left: 2%;
+  width: 90%;
+  height: 40px;
+  resize: none;
+}
+
+.form {
+  padding: 1% 2% 2% 2%;
+}
+
+.form-btn {
+  margin-right: 8%;
 }
 
 .actions {

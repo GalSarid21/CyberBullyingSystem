@@ -10,7 +10,13 @@ function CollapsibleInputContent() {
     const [isLoading, setIsLoading] = useState(false);
     const [showResultsDiv, setshowResultsDiv] = useState(false);
     const [err, setErr] = useState('');
-    
+
+    const handleKeypress = e => {
+      if (e.keyCode === 13) { //enter
+        handleClick();
+      }
+    }
+
     const handleChange = (event) => {
         setMessage(event.target.value);
     };
@@ -22,26 +28,31 @@ function CollapsibleInputContent() {
 
         try {
           const url = 'http://localhost:5000/api/user-input/detect-bullying?text='
-          const response = await fetch(url.concat('', message.slice(1)), {
+          const queryString = message.startsWith('#') ? message.slice(1) : message;
+          const response = await fetch(url.concat('', queryString), {
             method: 'GET',
             headers: {
               Accept: 'application/json',
             },
           });
-    
+
           if (!response.ok) {
             throw new Error(`Error! status: ${response.status}`);
           }
-    
+
           const result = await response.json();
     
           console.log('result is: ', JSON.stringify(result, null, 4));
     
           setData(result);
-        } catch (err) {
+        } 
+        
+        catch (err) {
           setErr(err.message);
           setData([]);
-        } finally {
+        } 
+        
+        finally {
           setIsLoading(false);
           setshowResultsDiv(true);
         }
@@ -59,6 +70,7 @@ function CollapsibleInputContent() {
                 name='message'
                 onChange={handleChange}
                 value={message}
+                onKeyDown={handleKeypress}
             />
             <div>
                 {err && <h2>{err}</h2>}

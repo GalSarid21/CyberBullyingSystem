@@ -38,9 +38,13 @@ function CollapsibleContent() {
     
           setTweet(result);
           setShowTweetDiv(true);
-        } catch (err) {
+        } 
+        
+        catch (err) {
           setErr(err.message);
-        } finally {
+        } 
+        
+        finally {
           setIsLoadingTweet(false);
         }
       };

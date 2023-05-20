@@ -2,6 +2,7 @@ from flask import request, Flask
 import Utils.distil_bert_objects as dbo
 from ModelAPI.prediction import DbPrediction, UserPrediction
 from DAL.post_presentation_data_dal import PostPresentationDataDAL
+from DAL.hate_monitor_dal import HateMonitorDAL
 import Utils.multithreading as multithreading
 from configparser import ConfigParser
 from flask_caching import Cache
@@ -37,7 +38,7 @@ async def detect_bullying_from_user():
                 text = request.args.get('text')
                 if not text:
                     err_msg = 'invalid url pattern for detect-bullying endpoint. ' +\
-                            'please try again with: /detect-bullying?text=<yourText>.'
+                              'please try again with: /detect-bullying?text=<your text>.'
                     return err_msg, 400
 
             case 'POST':
@@ -52,8 +53,8 @@ async def detect_bullying_from_user():
         np_label = np.zeros(np_text.shape[0]*labels).reshape(np_text.shape[0], labels)
         text_ds = dbo.TextualInput(np_text, np_label)
         predictions = dbo.predict(distilbert, text_ds)
-        predictions_as_dto = [UserPrediction(p).__dict__ for p in predictions]
-        return json.dumps(predictions_as_dto)
+        prediction_dicts = [UserPrediction(p).__dict__ for p in predictions]
+        return json.dumps(prediction_dicts)
     except Exception as e:
         print(e)
         return 'An error accured, please try again later.', 500
@@ -71,6 +72,30 @@ async def get_random_db_post():
                     post_id = np.random.randint(1, max_id)
                     ppd = await ppd_dal.get_post_presentation_data_by_id(post_id)
         return {'id': ppd.id, 'user_name': ppd.user_name, 'content': ppd.content}
+    
+    except Exception as e:
+        print(e)
+        return 'An error accured, please try again later.', 500
+
+@app.route('/api/hate-monitors', methods=['GET'])
+async def get_hate_monitors():
+    
+    user_name = request.args.get('user_name')
+    if not user_name:
+        err_msg = 'invalid url pattern for hate-monitors endpoint. ' +\
+                  'please try again with: /hate-monitors?user_name=<your user name>.'
+        return err_msg, 400
+    
+    try:            
+        async_session = dbo.get_async_session(config)
+        async with async_session() as session:
+            async with session.begin():
+                hm_dal = HateMonitorDAL(session)
+                hms = await hm_dal.get_hate_monitors_by_user_name(user_name)
+                if not hms:
+                    return '', 204
+        hms_dicts = [hm.__repr__() for hm in hms]
+        return hms_dicts
     
     except Exception as e:
         print(e)

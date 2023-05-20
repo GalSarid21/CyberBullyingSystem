@@ -17,7 +17,6 @@ function NlpModelPage() {
 
     return (
         <section>
-            <h1>NLP Model Page</h1>
             <div className={classes.accordion}>
               {data.map((item, i) => (
                 <div className={classes.item}>

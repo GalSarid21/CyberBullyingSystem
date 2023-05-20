@@ -23,22 +23,22 @@ th {
 }
 
 tr{
- width: 100%;
  background-color: #fafafa;
  font-family: 'Montserrat', sans-serif;
+ overflow: auto;
 }
 tr:nth-child(even){
  background-color: #dcdbdb;
 }
 
 table {
-  height: 300px;
+  max-height: 300px;
   width: 860px;
   overflow: auto;
-  table-layout: fixed
+  table-layout: fixed;
 }
 
-span {
+.table-span {
   display: inline-block;
   position: relative;
   width: 100%;
@@ -48,7 +48,7 @@ span {
   vertical-align: top;
 }
 
-span:hover {
+.table-span:hover {
   z-index: 1;
   width: auto;
   background-color: #ee94a6;
