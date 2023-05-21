@@ -6,6 +6,7 @@
       transform: rotate(360deg);
     }
   }
+  
   .loadingSpinner {
     width: 50px;
     height: 50px;
@@ -20,4 +21,20 @@
     justify-content: center;
     align-items: center;
     height: 300px;
+  }
+
+  .loadingSpinnerSmall {
+    width: 40px;
+    height: 40px;
+    border: 10px solid #f3f3f3; /* Light grey */
+    border-top: 10px solid #383636; /* Black */
+    border-radius: 50%;
+    animation: spinner 1.5s linear infinite;
+  }
+
+  .spinnerContainerSmall {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
   }

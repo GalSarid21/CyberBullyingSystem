@@ -1,0 +1,32 @@
+  .scan-input {
+    width: 30%;
+    margin-top: 2%;
+    margin-left: 2%;
+    font-family: 'Open Sans',Sans-serif;
+  }
+
+  .scan-input-short {
+    width: 10%;
+    margin-top: 2%;
+    margin-left: 2%;
+    font-family: 'Open Sans',Sans-serif;
+  }
+
+  .hour {
+    margin-left: 2.6%;
+  }
+
+  .day {
+    margin-left: 5%;
+  }
+
+  .week {
+  }
+
+  .month {
+  }
+
+  .scan-h2 {
+    margin-left: 2%;
+    margin-top: 3%;
+  }

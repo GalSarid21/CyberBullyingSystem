@@ -96,7 +96,7 @@ function NewDbMonitorForm() {
         </div>
         <div>
             {err && <h3>{err}</h3>}
-            {isLoading && <LoadingSpinner />}
+            {isLoading && <LoadingSpinner isSmall={true}/>}
         </div>
         <div className={showResultsDiv ? 'content-show' : 'content-hide'}>
                 <h3>Entry was added successfully with the following predictions:</h3>

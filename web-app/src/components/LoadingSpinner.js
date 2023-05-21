@@ -1,10 +1,11 @@
 import React from "react";
 import classes from "./LoadingSpinner.module.css";
 
-function LoadingSpinner() {
+function LoadingSpinner(props) {
+  console.log(props.isSmall);
   return (
-    <div className={classes.spinnerContainer}>
-      <div className={classes.loadingSpinner}>
+    <div className={props.isSmall ? classes.spinnerContainerSmall : classes.spinnerContainer}>
+      <div className={props.isSmall ? classes.loadingSpinnerSmall : classes.loadingSpinner}>
       </div>
     </div>
   );

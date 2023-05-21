@@ -27,8 +27,10 @@ function CollapsibleInputContent() {
         setshowResultsDiv(false);
 
         try {
-          const url = 'http://localhost:5000/api/user-input/detect-bullying?text='
-          const queryString = message.startsWith('#') ? message.slice(1) : message;
+          const url = 'http://localhost:5000/api/user-input/detect-bullying?text=';
+          const queryString = message.startsWith('#') 
+                            ? message.slice(1) 
+                            : message;
           const response = await fetch(url.concat('', queryString), {
             method: 'GET',
             headers: {
@@ -74,7 +76,7 @@ function CollapsibleInputContent() {
             />
             <div>
                 {err && <h2>{err}</h2>}
-                {isLoading && <LoadingSpinner />}
+                {isLoading && <LoadingSpinner isSmall={true}/>}
             </div>
             <div className={showResultsDiv ? classes.contentshow : classes.content}>
                 <h3>Model Prediction: </h3>

@@ -21,7 +21,8 @@ function CollapsibleContent() {
         setShowResultsDiv(false);
 
         try {
-          const response = await fetch('http://localhost:5000/api/db-posts/random', {
+          const url = 'http://localhost:5000/api/db-posts/random';
+          const response = await fetch(url, {
             method: 'GET',
             headers: {
               Accept: 'application/json',
@@ -56,8 +57,11 @@ function CollapsibleContent() {
         setIsLoadingPreds(true);
 
         try {
-          const url = 'http://localhost:5000/api/user-input/detect-bullying?text='
-          const response = await fetch(url.concat('', tweet.content), {
+          const url = 'http://localhost:5000/api/user-input/detect-bullying?text=';
+          const queryString = tweet.content.startsWith('#') 
+                            ? tweet.content.slice(1) 
+                            : tweet.content;
+          const response = await fetch(url.concat('', queryString), {
             method: 'GET',
             headers: {
               Accept: 'application/json',
@@ -85,7 +89,7 @@ function CollapsibleContent() {
         <div className={classes.tweetBorder}>
             <div>
                 {err && <h2>{err}</h2>}
-                {isLoadingTweet && <LoadingSpinner />}
+                {isLoadingTweet && <LoadingSpinner isSmall={true}/>}
             </div>
             <div className={showTweetDiv ? classes.twitterTweet : classes.content}>
                 <header className={classes.header}>
@@ -98,7 +102,7 @@ function CollapsibleContent() {
                 </header>
                 <p classeName={classes.twitterTweet}>{tweet.content}</p>
             </div>
-            {isLoadingPreds && <LoadingSpinner />}
+            {isLoadingPreds && <LoadingSpinner isSmall={true}/>}
             <div className={showResultsDiv ? classes.contentshow : classes.content}>
                 <h3>Model Prediction: </h3>
                 {data.map(labels => {
