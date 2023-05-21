@@ -12,24 +12,26 @@ function ScanDbForm() {
     const maxHatePerMonthInputRef = useRef();
 
     const [isLoading, setIsLoading] = useState(false);
+    const [message, setMessage] = useState([]);
     const [err, setErr] = useState('');
 
     const handleSubmission = async (event) => {
         event.preventDefault();
         setErr('');
+        setMessage('');
         setIsLoading(true);
 
         const newScanData = {
             'userName': userNameInputRef.current.value,
             'alertEmail': alertEmailInputRef.current.value,
-            'maxHatePerHour': maxHatePerHourInputRef.value,
-            'maxHatePerDay': maxHatePerDayInputRef.value,
-            'maxHatePerWeek': maxHatePerWeekInputRef.value,
-            'maxHatePerMonth': maxHatePerMonthInputRef.value
+            'maxHatePerHour': maxHatePerHourInputRef.current.value,
+            'maxHatePerDay': maxHatePerDayInputRef.current.value,
+            'maxHatePerWeek': maxHatePerWeekInputRef.current.value,
+            'maxHatePerMonth': maxHatePerMonthInputRef.current.value
           }
 
         try {
-            const url = 'http://localhost:5000/api/'
+            const url = 'http://localhost:5000/api/hate-monitors/scan'
             const response = await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(newScanData),
@@ -41,6 +43,9 @@ function ScanDbForm() {
             if (!response.ok) {
                 throw new Error(`Error! status: ${response.status}`);
             }
+
+            const result = await response.json();
+            setMessage(result.scanRes);
         } 
         catch (err) {
             setErr(err.message);
@@ -77,6 +82,7 @@ function ScanDbForm() {
             <div>
                 {err && <h3>{err}</h3>}
                 {isLoading && <LoadingSpinner isSmall={true}/>}
+                {message && <h3>{message}</h3>}
             </div>
       </form>
     );

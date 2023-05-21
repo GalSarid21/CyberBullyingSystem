@@ -2,6 +2,7 @@ from flask import request, Flask
 import Utils.distil_bert_objects as dbo
 from ModelAPI.prediction import DbPrediction, UserPrediction
 from DAL.post_presentation_data_dal import PostPresentationDataDAL
+from BL.hate_table_scan_bl import HateTableScanBL
 from DAL.hate_monitor_dal import HateMonitorDAL
 import Utils.multithreading as multithreading
 from configparser import ConfigParser
@@ -146,6 +147,37 @@ async def add_hate_monitor():
         print(e)
         return 'An error accured, please try again later.', 500
     
+@app.route('/api/hate-monitors/scan', methods=['POST'])
+async def scan_hate_table():
+    try:
+        req_json = request.get_json(force=True)
+    except:
+        err_msg = 'invalid body pattern.'
+        return err_msg, 400
+    
+    try:            
+        async_session = dbo.get_async_session(config)
+        async with async_session() as session:
+            async with session.begin():
+                user_name = req_json['userName']
+                hm_dal = HateMonitorDAL(session)
+                hms = await hm_dal.get_hate_monitors_by_user_name(user_name)
+                if not hms:
+                    return f'did not find entries for user: {user_name}', 204
+                bl = HateTableScanBL(
+                    user_name, req_json['alertEmail'], 
+                    int(req_json['maxHatePerHour']),
+                    int(req_json['maxHatePerDay']),
+                    int(req_json['maxHatePerWeek']),
+                    int(req_json['maxHatePerMonth']),
+                )
+                scan_res = bl.scan(hms)
+        return {'scanRes': scan_res}
+    
+    except Exception as e:
+        print(e)
+        return 'An error accured, please try again later.', 500
+
 @app.route('/api/db-input/detect-bullying', methods=['GET', 'POST'])
 async def detect_bullying_from_db():
     try:            
@@ -198,3 +230,4 @@ def predict_ppd(ppd):
     prediction = dbo.predict(distilbert, text_ds)
     prediction_dto = DbPrediction(prediction[0], ppd.content).__dict__
     return prediction_dto
+
