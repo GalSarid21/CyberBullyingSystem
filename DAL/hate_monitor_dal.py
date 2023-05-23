@@ -21,11 +21,12 @@ class HateMonitorDAL():
                                   obscene: Optional[int] = 0,
                                   insult: Optional[int] = 0,
                                   threat: Optional[int] = 0,
-                                  identity_hate: Optional[int] = 0) -> HateMonitor:
+                                  identity_hate: Optional[int] = 0,
+                                  added_on: datetime = datetime.utcnow()) -> HateMonitor:
         new_hm = HateMonitor(
             source, user_name, content, toxic, severe_toxic, 
             obscene, insult, threat, identity_hate,
-            added_on=datetime.utcnow(), 
+            added_on=added_on, 
             last_updated_on=datetime.utcnow())
         self._db_session.add(new_hm)
         await self._db_session.flush()

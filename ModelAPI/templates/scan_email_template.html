@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+    <html dir="rtl">
+        <head>
+            <title>Email Template</title>
+        </head>
+        <body>
+            <h3>Hello, {{ user_name }}'s trustee,<br></h3>
+            <p>A scan that was completed at {{ scan_time }} on our system 
+               found {{ num_hate }} hate events for the past {{ period_str }}.</p>
+            <p>{{ pct_section }}[{{ max_hate_rule }} per {{ period_str }}].</p>
+            <h4>Sincerely,<br>Online Bulling Detection (OBD) team.</h4>
+        </body>
+</html>

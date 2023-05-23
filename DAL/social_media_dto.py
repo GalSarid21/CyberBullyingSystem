@@ -158,3 +158,14 @@ class HateMonitor(Base):
             'addedOn': self.added_on, 
             'lastUpdatedOn': self.last_updated_on
         }
+    
+    def is_hate(self) -> bool:
+        
+        hate_monitor_preds = [
+            self.toxic, self.severe_toxic, self.obscene,
+            self.insult, self.threat, self.identity_hate]
+        
+        for pred in hate_monitor_preds:
+            if pred == 1:
+                return True
+        return False

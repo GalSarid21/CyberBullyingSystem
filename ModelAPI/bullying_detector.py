@@ -1,4 +1,5 @@
 from flask import request, Flask
+from flask_mail  import Mail, Message
 import Utils.distil_bert_objects as dbo
 from ModelAPI.prediction import DbPrediction, UserPrediction
 from DAL.post_presentation_data_dal import PostPresentationDataDAL
@@ -14,15 +15,26 @@ import json
 
 # create app
 app = Flask(__name__)
+mail = Mail(app)
 CORS(app)
 
 # read config and get vlas
-config = ConfigParser()
-config.read("Data\\local.ini")
-labels = int(config.get('BERT', 'NumLabels'))
-db_used_ids_max_len = int(config.get('MySQL', 'DbUsedIdsMaxLen'))
-max_concurrency = int(config.get('Concurrency', 'MaxConcurrency'))
-distilbert = dbo.get_distilbert_configured(config)
+api_config = ConfigParser()
+api_config.read("Data\\local.ini")
+labels = int(api_config.get('BERT', 'NumLabels'))
+db_used_ids_max_len = int(api_config.get('MySQL', 'DbUsedIdsMaxLen'))
+max_concurrency = int(api_config.get('Concurrency', 'MaxConcurrency'))
+distilbert = dbo.get_distilbert_configured(api_config)
+
+# configure flask mail
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = api_config.get('Mail', 'Address')
+app.config['MAIL_DEFAULT_SENDER'] = api_config.get('Mail', 'Address')
+app.config['MAIL_PASSWORD'] = api_config.get('Mail', 'Password')
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 # init cache
 cache = Cache()
@@ -63,7 +75,7 @@ async def detect_bullying_from_user():
 @app.route('/api/db-posts/random', methods=['GET'])
 async def get_random_db_post():
     try:            
-        async_session = dbo.get_async_session(config)
+        async_session = dbo.get_async_session(api_config)
         async with async_session() as session:
             async with session.begin():
                 ppd = None
@@ -88,7 +100,7 @@ async def get_hate_monitors():
         return err_msg, 400
     
     try:            
-        async_session = dbo.get_async_session(config)
+        async_session = dbo.get_async_session(api_config)
         async with async_session() as session:
             async with session.begin():
                 hm_dal = HateMonitorDAL(session)
@@ -112,7 +124,7 @@ async def delete_hate_monitors():
         return err_msg, 400
     
     try:            
-        async_session = dbo.get_async_session(config)
+        async_session = dbo.get_async_session(api_config)
         async with async_session() as session:
             async with session.begin():
                 hm_dal = HateMonitorDAL(session)
@@ -132,14 +144,15 @@ async def add_hate_monitor():
         return err_msg, 400
     
     try:            
-        async_session = dbo.get_async_session(config)
+        async_session = dbo.get_async_session(api_config)
         async with async_session() as session:
             async with session.begin():
                 hm_dal = HateMonitorDAL(session)
                 await hm_dal.create_hate_monitor(
                     req_json['source'], req_json['userName'], req_json['content'],
-                    req_json['toxic'], req_json['severeToxic'], req_json['obscene'],
-                    req_json['threat'], req_json['insult'], req_json['identityHate']
+                    int(req_json['toxic']), int(req_json['severeToxic']),
+                    int(req_json['obscene']), int(req_json['threat']), 
+                    int(req_json['insult']), int(req_json['identityHate'])
                 )
         return '', 201
     
@@ -156,7 +169,7 @@ async def scan_hate_table():
         return err_msg, 400
     
     try:            
-        async_session = dbo.get_async_session(config)
+        async_session = dbo.get_async_session(api_config)
         async with async_session() as session:
             async with session.begin():
                 user_name = req_json['userName']
@@ -171,7 +184,7 @@ async def scan_hate_table():
                     int(req_json['maxHatePerWeek']),
                     int(req_json['maxHatePerMonth']),
                 )
-                scan_res = bl.scan(hms)
+                scan_res = bl.scan(hms, mail)
         return {'scanRes': scan_res}
     
     except Exception as e:
@@ -198,7 +211,7 @@ async def detect_bullying_from_db():
                     err_msg = 'invalid body pattern. please try again with: {"num_texts": "yourNumber"}'
                     return err_msg, 400
 
-        async_session = dbo.get_async_session(config)
+        async_session = dbo.get_async_session(api_config)
         async with async_session() as session:
             async with session.begin():
                 db_used_ids = cache.get('db_used_ids')
