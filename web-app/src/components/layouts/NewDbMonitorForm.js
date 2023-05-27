@@ -1,7 +1,11 @@
 import { useRef, useState } from 'react';
 import LoadingSpinner from '../LoadingSpinner';
 import Prediction from '../Prediction';
+import DateTimePicker from 'react-datetime-picker';
 import './NewDbMonitorForm.css';
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
 
 function NewDbMonitorForm() {
     
@@ -11,6 +15,7 @@ function NewDbMonitorForm() {
 
     const [showResultsDiv, setshowResultsDiv] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [date, onDateChange] = useState(new Date());
     const [data, setData] = useState([]);
     const [err, setErr] = useState('');
 
@@ -57,7 +62,8 @@ function NewDbMonitorForm() {
             'obscene': data.obscene ? 1 : 0,
             'threat': data.threat ? 1 : 0,
             'insult': data.insult ? 1 : 0,
-            'identityHate': data.identityHate ? 1 : 0
+            'identityHate': data.identityHate ? 1 : 0,
+            'addedOn' : date
           }
 
         try {
@@ -80,19 +86,25 @@ function NewDbMonitorForm() {
       };
     
     return(
-        <form className='form' onSubmit={handleSubmission}>
+      <form className='form' onSubmit={handleSubmission}>
         <div className='input'>
-            <h4 htmlFor='source' className='h4'>Source:</h4>
+            <h4 htmlFor='source' className='page-align-input'>Source:</h4>
             <input type='text' required id='source' className='input-text-short' ref={sourceInputRef}></input>
             <h4 htmlFor='user-name' className='h4'>User Name:</h4>
             <input type='text' required id='user-name' className='input-text-short' ref={userNameInputRef}></input>
         </div>
-        <div>
+        <div className='input'>
           <h4 htmlFor='content' className='h4'>Content:</h4>
-          <textarea id='content' className='text-area' ref={contentInputRef}></textarea>
+          <textarea id='content' className='text-area-for-form' ref={contentInputRef}></textarea>
         </div>
-          <div className='actions'>
-            <button className='form-btn'>Submit</button>
+        <div className='input form-input-alignment '>
+          <h4 htmlFor='content' className='h4'>Event Date:</h4>
+          <div className='date-time-picker-div'>
+              <DateTimePicker onChange={onDateChange} value={date}/>
+          </div>
+          <div className='actions right'>
+              <button className='form-btn form-btn-right'>Submit</button>
+          </div>
         </div>
         <div>
             {err && <h3>{err}</h3>}

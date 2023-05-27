@@ -18,11 +18,11 @@
     font-family: 'Open Sans',Sans-serif;
   }
   
-  .text-area {
+  .text-area-for-form {
     margin-top: 2%;
-    margin-left: 2%;
-    width: 90%;
-    height: 40px;
+    margin-left: 2.5%;
+    width: 80%;
+    height: 20%;
     resize: none;
     font-family: 'Open Sans',Sans-serif;
   }
@@ -72,4 +72,26 @@
     max-height: 9999;
     transition: all 0.5s cubic-bezier(0,1,0,1);
     margin-left: 2%;
+ }
+
+ .date-time-picker-div {
+  margin-top: 2%;
+  background-color: white;
+ }
+
+ .right {
+  margin-left: 45%;
+ }
+
+.page-align-input {
+  padding-right: 1.6%;
+  padding-left: 2%;
+}
+
+ .form-btn-right {
+  width: 100%;
+ }
+
+ .form-input-alignment {
+  margin-bottom: 3%;
  }

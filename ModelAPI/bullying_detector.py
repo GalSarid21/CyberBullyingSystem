@@ -8,6 +8,7 @@ from DAL.hate_monitor_dal import HateMonitorDAL
 import Utils.multithreading as multithreading
 from configparser import ConfigParser
 from flask_caching import Cache
+from datetime import datetime
 from flask_cors import CORS
 from pathlib import Path
 import numpy as np
@@ -152,7 +153,8 @@ async def add_hate_monitor():
                     req_json['source'], req_json['userName'], req_json['content'],
                     int(req_json['toxic']), int(req_json['severeToxic']),
                     int(req_json['obscene']), int(req_json['threat']), 
-                    int(req_json['insult']), int(req_json['identityHate'])
+                    int(req_json['insult']), int(req_json['identityHate']),
+                    datetime.strptime(req_json['addedOn'], '%Y-%m-%dT%H:%M:%S.%fZ')
                 )
         return '', 201
     
