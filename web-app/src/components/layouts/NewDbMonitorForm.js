@@ -7,13 +7,13 @@ import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
 
-function NewDbMonitorForm() {
+function NewDbMonitorForm(props) {
     
     const sourceInputRef = useRef();
     const userNameInputRef = useRef();
     const contentInputRef = useRef();
 
-    const [showResultsDiv, setshowResultsDiv] = useState(false);
+    const [showResultsDiv, setShowResultsDiv] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [date, onDateChange] = useState(new Date());
     const [data, setData] = useState([]);
@@ -27,63 +27,35 @@ function NewDbMonitorForm() {
         const sourceInput = sourceInputRef.current.value;
         const userNameInput = userNameInputRef.current.value;
         const contentInput = contentInputRef.current.value;
-
+        
         try {
-            const url = 'http://localhost:5000/api/user-input/detect-bullying?text='
-            const queryString = contentInput.startsWith('#') ? contentInput.slice(1) : contentInput;
-            const response = await fetch(url.concat('', queryString), {
-              method: 'GET',
+          const preds = await props.onFormSubmission(
+            sourceInput, userNameInput, contentInput, date
+          );
+
+          const url = 'http://localhost:5000/api/hate-monitors/add'
+          const response = await fetch(url, {
+              method: 'POST',
+              body: JSON.stringify(preds[0]),
               headers: {
-                Accept: 'application/json',
+                  Accept: 'application/json',
               },
-            });
-  
-            if (!response.ok) {
-              throw new Error(`Error! status: ${response.status}`);
-            }
-            const result = await response.json();
-            setData(result);
-          } 
-          catch (err) {
-            setErr(err.message);
-            setData([]);
-          } 
-          finally {
-            setIsLoading(false);
-            setshowResultsDiv(true);
+          });
+
+          if (!response.ok) {
+            throw new Error(`Error! status: ${response.status}`);
           }
-
-          const newPostData = {
-            'source': sourceInput,
-            'userName': userNameInput,
-            'content': contentInput,
-            'toxic': data.toxic ? 1 : 0,
-            'severeToxic': data.severeToxic ? 1 : 0,
-            'obscene': data.obscene ? 1 : 0,
-            'threat': data.threat ? 1 : 0,
-            'insult': data.insult ? 1 : 0,
-            'identityHate': data.identityHate ? 1 : 0,
-            'addedOn' : date
-          }
-
-        try {
-            const url = 'http://localhost:5000/api/hate-monitors/add'
-            const response = await fetch(url, {
-                method: 'POST',
-                body: JSON.stringify(newPostData),
-                headers: {
-                    Accept: 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error(`Error! status: ${response.status}`);
-            }
-        } 
-        catch (err) {
-            setErr(err.message);
-        } 
-      };
+          
+          setData(preds);
+          setShowResultsDiv(true);
+        }
+        catch(err) {
+          setErr(err.message);
+        }
+        finally {
+          setIsLoading(false);
+        }
+    }
     
     return(
       <form className='form' onSubmit={handleSubmission}>

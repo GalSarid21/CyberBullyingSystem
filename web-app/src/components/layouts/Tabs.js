@@ -15,6 +15,37 @@ function Tabs() {
   const [showDeleteMsg, setshowDeleteMsg] = useState(false);
   const [toggleState, setToggleState] = useState(1);
 
+  async function HandleFormSubmission(sourceInput, userNameInput, contentInput, date) {
+    const url = 'http://localhost:5000/api/user-input/detect-bullying?text='
+    const queryString = contentInput.startsWith('#') ? contentInput.slice(1) : contentInput;
+    const response = await fetch(url.concat('', queryString), {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error! status: ${response.status}`);
+    }
+    
+    const result = await response.json();
+    return result.map(labels => {
+      return {
+        'source': sourceInput,
+        'userName': userNameInput,
+        'content': contentInput,
+        'toxic': labels.toxic ? 1 : 0,
+        'severeToxic': labels.severe_toxic ? 1 : 0,
+        'obscene': labels.obscene ? 1 : 0,
+        'threat': labels.threat ? 1 : 0,
+        'insult': labels.insult ? 1 : 0,
+        'identityHate': labels.identity_hate ? 1 : 0,
+        'addedOn' : date
+      }
+    });
+};
+
   const handleKeypress = (event) => {
     if (event.keyCode === 13) { //enter
       handleClick();
@@ -55,7 +86,6 @@ function Tabs() {
 
       if (response.status === 200) {
         const result = await response.json();
-        console.log('result is: ', JSON.stringify(result, null, 4));
         setPosts(result);
         setShowTable(true);
       }
@@ -170,7 +200,7 @@ function Tabs() {
           className={toggleState === 2 ? "content  active-content" : "content"}
         >
           <div>
-            <NewDbMonitorForm />
+            <NewDbMonitorForm onFormSubmission={HandleFormSubmission}/>
           </div>
         </div>
         

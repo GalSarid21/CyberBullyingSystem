@@ -19,8 +19,8 @@ class HateMonitorDAL():
                                   toxic: Optional[int] = 0,
                                   severe_toxic: Optional[int] = 0,
                                   obscene: Optional[int] = 0,
-                                  insult: Optional[int] = 0,
                                   threat: Optional[int] = 0,
+                                  insult: Optional[int] = 0,
                                   identity_hate: Optional[int] = 0,
                                   added_on: datetime = datetime.utcnow()) -> HateMonitor:
         new_hm = HateMonitor(
