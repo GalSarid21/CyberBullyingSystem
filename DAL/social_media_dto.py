@@ -142,7 +142,7 @@ class HateMonitor(Base):
         self.added_on = added_on
         self.last_updated_on = last_updated_on
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> dict:
         
         return {
             'id': self.id,
@@ -163,7 +163,8 @@ class HateMonitor(Base):
         
         hate_monitor_preds = [
             self.toxic, self.severe_toxic, self.obscene,
-            self.insult, self.threat, self.identity_hate]
+            self.insult, self.threat, self.identity_hate
+        ]
         
         for pred in hate_monitor_preds:
             if pred == 1:

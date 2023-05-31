@@ -1,0 +1,12 @@
+.projectTitle {
+  margin-bottom: 3%;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.projectParagraph {
+  margin: 0.7% 0 0.7% 0;
+}
+
+.fullWidth {
+  width: 900px;
+}

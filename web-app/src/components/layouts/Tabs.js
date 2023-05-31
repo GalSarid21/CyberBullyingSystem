@@ -113,19 +113,19 @@ function Tabs() {
           className={toggleState === 1 ? "tabs active-tabs" : "tabs"}
           onClick={() => toggleTab(1)}
         >
-          Get DB Events By User Name
+          Get Events By User Name
         </button>
         <button
           className={toggleState === 2 ? "tabs active-tabs" : "tabs"}
           onClick={() => toggleTab(2)}
         >
-          Add a DB Monitor
+          Add a new Event
         </button>
         <button
           className={toggleState === 3 ? "tabs active-tabs" : "tabs"}
           onClick={() => toggleTab(3)}
         >
-          Delete a DB Monitor
+          Delete Event
         </button>
         <button
           className={toggleState === 4 ? "tabs active-tabs" : "tabs"}

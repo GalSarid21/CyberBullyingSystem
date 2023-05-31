@@ -31,7 +31,7 @@ class HateTableScanBL():
         num_hates_in_last_hour = self.__get_numer_of_hates_for_time_period(
             hate_monitors, one_hour_ago)
         
-        if num_hates_in_last_hour >= self.__max_hate_per_hour:
+        if num_hates_in_last_hour > self.__max_hate_per_hour:
             self.__send_mail_for_time_period(
                 'hour', num_hates_in_last_hour, self.__max_hate_per_hour, mail_app)
             return found_hate_msg
@@ -40,7 +40,7 @@ class HateTableScanBL():
         num_hates_in_last_day = self.__get_numer_of_hates_for_time_period(
             hate_monitors, one_day_ago)
         
-        if num_hates_in_last_day >= self.__max_hate_per_day:
+        if num_hates_in_last_day > self.__max_hate_per_day:
             self.__send_mail_for_time_period(
                 'day', num_hates_in_last_day, self.__max_hate_per_day, mail_app)
             return found_hate_msg
@@ -49,7 +49,7 @@ class HateTableScanBL():
         num_hates_in_last_week = self.__get_numer_of_hates_for_time_period(
             hate_monitors, one_week_ago)
         
-        if num_hates_in_last_week >= self.__max_hate_per_week:
+        if num_hates_in_last_week > self.__max_hate_per_week:
             self.__send_mail_for_time_period(
                 'week', num_hates_in_last_week, self.__max_hate_per_week, mail_app)
             return found_hate_msg
@@ -58,7 +58,7 @@ class HateTableScanBL():
         num_hates_in_last_month = self.__get_numer_of_hates_for_time_period(
             hate_monitors, one_month_ago)
         
-        if num_hates_in_last_month >= self.__max_hate_per_month:
+        if num_hates_in_last_month > self.__max_hate_per_month:
             self.__send_mail_for_time_period(
                 'month', num_hates_in_last_month, self.__max_hate_per_month, mail_app)
             return found_hate_msg
@@ -70,7 +70,7 @@ class HateTableScanBL():
                                              hate_monitors: Iterable[HateMonitor],
                                              time_period: datetime) -> int:
         
-        all_hms_in_period = [hm for hm in hate_monitors if hm.added_on >= time_period]
+        all_hms_in_period = [hm for hm in hate_monitors if hm.added_on >= time_period and hm.is_hate()]
         all_hate_in_period = [hm for hm in all_hms_in_period if hm.is_hate()]
         return len(all_hate_in_period) 
 
@@ -80,7 +80,7 @@ class HateTableScanBL():
                                     max_hate_rule: int,
                                     mail_app: Mail) -> None:
         msg = Message(
-            subject='Online Bulling Detection (OBD) Alert Message', 
+            subject='Online Bullying Detection (OBD) Alert Message', 
             recipients = [self.__alert_email])
         
         num = num_hate_for_period - max_hate_rule
