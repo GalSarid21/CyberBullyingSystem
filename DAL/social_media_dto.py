@@ -25,7 +25,7 @@ class PostTrainDataStatusID(IntEnum):
 class PostTrainDataStatus(Base):
     __tablename__ = 'post_train_data_status'
 
-    status_id = Column('id', Integer, primary_key=True)
+    status_id = Column('status_id', Integer, primary_key=True)
     status_str = Column('status_str', String, primary_key=False)
 
 class PostTrainData(Base):

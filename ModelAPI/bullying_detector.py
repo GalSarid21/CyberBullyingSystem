@@ -80,10 +80,10 @@ async def get_random_db_post():
         async with async_session() as session:
             async with session.begin():
                 ppd = None
+                ppd_dal = PostPresentationDataDAL(session)
+                max_id = await ppd_dal.get_max_post_id()
                 while ppd is None:
-                    ppd_dal = PostPresentationDataDAL(session)
-                    max_id = await ppd_dal.get_max_post_id()
-                    post_id = np.random.randint(1, max_id)
+                    post_id = np.random.randint(1, max_id + 1)
                     ppd = await ppd_dal.get_post_presentation_data_by_id(post_id)
         return {'id': ppd.id, 'user_name': ppd.user_name, 'content': ppd.content}
     
